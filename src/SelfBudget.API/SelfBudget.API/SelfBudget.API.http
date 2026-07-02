@@ -1,0 +1,6 @@
+@SelfBudget.API_HostAddress = http://localhost:5098
+
+GET {{SelfBudget.API_HostAddress}}/user/health
+Accept: application/json
+
+###
