@@ -4,6 +4,8 @@ namespace SelfBudget.API.Entities;
 
 public class TransactionCategory : IBaseEntity<Guid>
 {
+    protected TransactionCategory() { }
+
     public TransactionCategory(
         Guid transactionCategoryTypeId,
         string name,
@@ -26,11 +28,11 @@ public class TransactionCategory : IBaseEntity<Guid>
     /// Идентификатор типа категории транзакции
     /// </summary>
     public Guid TransactionCategoryTypeId { get; set; }
-    
+
     /// <summary>
     /// Наименование типа
     /// </summary>
-    public string Name { get; set; }
+    public string Name { get; set; } = string.Empty;
 
     /// <summary>
     /// Тип

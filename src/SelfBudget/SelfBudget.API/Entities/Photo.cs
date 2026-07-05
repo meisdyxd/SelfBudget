@@ -4,6 +4,8 @@ namespace SelfBudget.API.Entities;
 
 public class Photo : AuditableEntity, IBaseEntity<Guid>
 {
+    protected Photo() { }
+
     public Photo(
         Guid userId,
         string uri,
@@ -26,7 +28,7 @@ public class Photo : AuditableEntity, IBaseEntity<Guid>
     /// <summary>
     /// URL фотографии
     /// </summary>
-    public string Uri { get; set; }
+    public string Uri { get; set; } = string.Empty;
 
     /// <summary>
     /// Размер изображения в байтах

@@ -7,6 +7,8 @@ namespace SelfBudget.API.Entities;
 /// </summary>
 public class User : AuditableEntity, IBaseEntity<Guid>
 {
+    protected User() { }
+
     public User(
         string name,
         string email,
@@ -28,12 +30,12 @@ public class User : AuditableEntity, IBaseEntity<Guid>
     /// <summary>
     /// Имя пользователя
     /// </summary>
-    public string Name { get; set; }
+    public string Name { get; set; } = string.Empty;
 
     /// <summary>
     /// Электронная почта пользователя
     /// </summary>
-    public string Email { get; set; }
+    public string Email { get; set; } = string.Empty;
 
     /// <summary>
     /// Идентификатор фотографии пользователя
@@ -43,7 +45,7 @@ public class User : AuditableEntity, IBaseEntity<Guid>
     /// <summary>
     /// Хэш пароля пользователя
     /// </summary>
-    public string PasswordHash { get; set; }
+    public string PasswordHash { get; set; } = string.Empty;
 
     /// <summary>
     /// Дата рождения пользователя

@@ -4,6 +4,23 @@ namespace SelfBudget.API.Entities;
 
 public class Transaction : AuditableEntity, IBaseEntity<Guid>
 {
+    protected Transaction() { }
+
+    public Transaction(
+        decimal amount,
+        Guid fromAccountId,
+        Guid toAccountId,
+        Guid transactionCategoryId,
+        string? note = null)
+    {
+        Id = Guid.NewGuid();
+        Amount = amount;
+        FromAccountId = fromAccountId;
+        ToAccountId = toAccountId;
+        TransactionCategoryId = transactionCategoryId;
+        Note = note;
+    }
+
     /// <inheritdoc/>
     public Guid Id { get; set; }
 

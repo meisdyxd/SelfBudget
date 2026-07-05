@@ -7,6 +7,8 @@ namespace SelfBudget.API.Entities;
 /// </summary>
 public class TransactionCategoryType : IBaseEntity<Guid>
 {
+    protected TransactionCategoryType() { }
+
     public TransactionCategoryType(string name)
     {
         Id = Guid.NewGuid();
@@ -19,7 +21,7 @@ public class TransactionCategoryType : IBaseEntity<Guid>
     /// <summary>
     /// Наименование типа
     /// </summary>
-    public string Name { get; set; }
+    public string Name { get; set; } = string.Empty;
 
     /// <summary>
     /// Категории транзакций

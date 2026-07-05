@@ -4,6 +4,8 @@ namespace SelfBudget.API.Entities;
 
 public class Tag : AuditableEntity, IBaseEntity<Guid>
 {
+    protected Tag() { }
+
     public Tag(string name)
     {
         Id = Guid.NewGuid();
@@ -16,7 +18,7 @@ public class Tag : AuditableEntity, IBaseEntity<Guid>
     /// <summary>
     /// Наименование тега
     /// </summary>
-    public string Name { get; set; }
+    public string Name { get; set; } = string.Empty;
 
     /// <summary>
     /// Транзакции

@@ -7,6 +7,8 @@ namespace SelfBudget.API.Entities;
 /// </summary>
 public class Account : AuditableEntity, IBaseEntity<Guid>
 {
+    protected Account() { }
+
     public Account(
         Guid userId, 
         string name, 
@@ -39,12 +41,12 @@ public class Account : AuditableEntity, IBaseEntity<Guid>
     /// <summary>
     /// Название счета
     /// </summary>
-    public string Name { get; set; }
+    public string Name { get; set; } = string.Empty;
     
     /// <summary>
     /// Код валюты
     /// </summary>
-    public string CurrencyCode { get; set; }
+    public string CurrencyCode { get; set; } = string.Empty;
 
     /// <summary>
     /// Баланс счета

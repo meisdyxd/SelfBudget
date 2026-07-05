@@ -4,6 +4,8 @@ namespace SelfBudget.API.Entities;
 
 public class AccountType : AuditableEntity, IBaseEntity<Guid>
 {
+    protected AccountType() { }
+
     public AccountType(
         string name,
         string? description)
@@ -19,7 +21,7 @@ public class AccountType : AuditableEntity, IBaseEntity<Guid>
     /// <summary>
     /// Наименование типа счета
     /// </summary>
-    public string Name { get; set; }
+    public string Name { get; set; } = string.Empty;
 
     /// <summary>
     /// Описание типа счета

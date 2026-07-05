@@ -2,6 +2,8 @@
 
 public class TransactionTag
 {
+    protected TransactionTag() { }
+
     public TransactionTag(
         Guid tagId,
         Guid transactionId)
