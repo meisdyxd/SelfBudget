@@ -35,7 +35,7 @@ public class Transaction : AuditableEntity, IBaseEntity<Guid>
     /// <summary>
     /// Теги транзакции
     /// </summary>
-    public virtual ICollection<TransactionTag> Tags { get; set; } = [];
+    public virtual ICollection<TransactionTag> TransactionTags { get; set; } = [];
 
     /// <summary>
     /// Со счета

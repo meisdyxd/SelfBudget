@@ -1,5 +1,4 @@
 ﻿using SelfBudget.API.Abstractions;
-using SelfBudget.API.Enums;
 
 namespace SelfBudget.API.Entities;
 
@@ -12,14 +11,14 @@ public class Account : AuditableEntity, IBaseEntity<Guid>
         Guid userId, 
         string name, 
         string currencyCode,
-        AccountType type)
+        Guid accountTypeId)
     {
         Id = Guid.NewGuid();
         UserId = userId;
         Name = name;
         CurrencyCode = currencyCode;
+        TypeId = accountTypeId;
         Balance = 0m;
-        Type = type;
         OverdraftLimit = 0m;
     }
 
@@ -30,6 +29,12 @@ public class Account : AuditableEntity, IBaseEntity<Guid>
     /// Идентификатор пользователя
     /// </summary>
     public Guid UserId { get; set; }
+
+
+    /// <summary>
+    /// Идентификатор типа счета
+    /// </summary>
+    public Guid TypeId { get; set; }
 
     /// <summary>
     /// Название счета
@@ -47,17 +52,22 @@ public class Account : AuditableEntity, IBaseEntity<Guid>
     public decimal Balance { get; set; }
 
     /// <summary>
-    /// Тип счета
-    /// </summary>
-    public AccountType Type { get; set; }
-
-    /// <summary>
     /// Овердрафт лимит
     /// </summary>
     public decimal OverdraftLimit { get; set; }
 
     /// <summary>
+    /// Тип счета
+    /// </summary>
+    public virtual AccountType Type { get; set; }
+
+    /// <summary>
     /// Пользователь
     /// </summary>
     public virtual User User { get; set; }
+
+    /// <summary>
+    /// Транзакции
+    /// </summary>
+    public virtual ICollection<Transaction> Transactions { get; set; }
 }

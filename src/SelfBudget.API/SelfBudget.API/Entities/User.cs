@@ -38,7 +38,7 @@ public class User : AuditableEntity, IBaseEntity<Guid>
     /// <summary>
     /// Идентификатор фотографии пользователя
     /// </summary>
-    public string? PhotoId { get; set; }
+    public Guid? PhotoId { get; set; }
 
     /// <summary>
     /// Хэш пароля пользователя

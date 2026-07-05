@@ -11,4 +11,14 @@ public class AuditableEntity
     /// Дата и время обновления сущности
     /// </summary>
     public DateTime? UpdatedAt { get; set; }
+
+    /// <summary>
+    /// Кем создано
+    /// </summary>
+    public string? CreatedBy { get; set; }
+
+    /// <summary>
+    /// Кем обновлено
+    /// </summary>
+    public string? UpdatedBy { get; set; }
 }

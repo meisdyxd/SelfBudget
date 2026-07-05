@@ -1,25 +1,21 @@
-﻿using SelfBudget.API.Abstractions;
+﻿namespace SelfBudget.API.Entities;
 
-namespace SelfBudget.API.Entities;
-
-public class TransactionTag : AuditableEntity, IBaseEntity<Guid>
+public class TransactionTag
 {
-    public TransactionTag(string name)
+    public TransactionTag(
+        Guid tagId,
+        Guid transactionId)
     {
-        Id = Guid.NewGuid();
-        Name = name;
+        TagId = tagId;
+        TransactionId = transactionId;
+        AssignedAt = DateTime.UtcNow;
     }
 
-    /// <inheritdoc/>
-    public Guid Id { get; set; }
+    public Guid TagId { get; set; }
+    public virtual Tag Tag { get; set; }
 
-    /// <summary>
-    /// Наименование тега
-    /// </summary>
-    public string Name { get; set; }
+    public Guid TransactionId { get; set; }
+    public virtual Transaction Transaction { get; set; }
 
-    /// <summary>
-    /// Транзакции
-    /// </summary>
-    public virtual ICollection<Transaction> Transactions { get; set; } = [];
+    public DateTime AssignedAt { get; set; }
 }
