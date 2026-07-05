@@ -40,12 +40,12 @@ public class TransactionConfiguration : IEntityTypeConfiguration<Transaction>
 
         // Связи
         builder.HasOne(t => t.FromAccount)
-            .WithMany(a => a.Transactions)
+            .WithMany(a => a.OutTransactions)
             .HasForeignKey(t => t.FromAccountId)
             .OnDelete(DeleteBehavior.Restrict);
 
         builder.HasOne(t => t.ToAccount)
-            .WithMany(a => a.Transactions)
+            .WithMany(a => a.InTransactions)
             .HasForeignKey(t => t.ToAccountId)
             .OnDelete(DeleteBehavior.Restrict);
 

@@ -67,7 +67,12 @@ public class Account : AuditableEntity, IBaseEntity<Guid>
     public virtual User User { get; set; } = null!;
 
     /// <summary>
-    /// Транзакции
+    /// Исходящие транзакции
     /// </summary>
-    public virtual ICollection<Transaction> Transactions { get; set; } = [];
+    public virtual ICollection<Transaction> OutTransactions { get; set; } = [];
+
+    /// <summary>
+    /// Входящие транзакции
+    /// </summary>
+    public virtual ICollection<Transaction> InTransactions { get; set; } = [];
 }
