@@ -1,3 +1,5 @@
 <Solution>
-  <Project Path="SelfBudget.API/SelfBudget.API.csproj" />
+  <Folder Name="/src/">
+    <Project Path="SelfBudget.API/SelfBudget.API.csproj" />
+  </Folder>
 </Solution>

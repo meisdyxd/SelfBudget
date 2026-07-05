@@ -1,10 +1,15 @@
+using SelfBudget.API;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-builder.Services.AddControllers();
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-builder.Services.AddOpenApi();
+var services = builder.Services;
+var configuration = builder.Configuration;
+services
+    .AddInfrastructure(configuration)
+    .AddOpenApi()
+    .AddControllers();
 
 var app = builder.Build();
 
