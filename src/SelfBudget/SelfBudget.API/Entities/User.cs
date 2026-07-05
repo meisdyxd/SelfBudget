@@ -12,9 +12,9 @@ public class User : AuditableEntity, IBaseEntity<Guid>
     public User(
         string name,
         string email,
-        Guid? photo,
         string passwordHash,
-        DateTime birthdate)
+        DateTime birthdate,
+        Guid? photo = null)
     {
         Id = Guid.NewGuid();
         Name = name;
@@ -22,6 +22,8 @@ public class User : AuditableEntity, IBaseEntity<Guid>
         PhotoId = photo;
         PasswordHash = passwordHash;
         Birthdate = birthdate;
+        CreatedAt = DateTime.UtcNow;
+        UpdatedAt = DateTime.UtcNow;
     }
 
     /// <inheritdoc/>
