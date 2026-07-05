@@ -10,7 +10,7 @@ public class User : AuditableEntity, IBaseEntity<Guid>
     public User(
         string name,
         string email,
-        string? photo,
+        Guid? photo,
         string passwordHash,
         DateTime birthdate)
     {

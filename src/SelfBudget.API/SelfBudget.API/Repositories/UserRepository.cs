@@ -91,6 +91,6 @@ public class UserRepository : IUserRepository
             .SingleOrDefaultAsync(cancellationToken);
 
         _logger.LogInformation("Получен пользователь с идентификатором: '{UserId}'", id);
-        return user;
+        return user!;
     }
 }

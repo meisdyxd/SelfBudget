@@ -35,7 +35,7 @@ public class TransactionCategory : IBaseEntity<Guid>
     /// <summary>
     /// Тип
     /// </summary>
-    public virtual TransactionCategoryType Type { get; set; }
+    public virtual TransactionCategoryType Type { get; set; } = null!;
 
     /// <summary>
     /// Родительская категория транзакции

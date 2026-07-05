@@ -36,5 +36,5 @@ public class Photo : AuditableEntity, IBaseEntity<Guid>
     /// <summary>
     /// Пользователь
     /// </summary>
-    public virtual User User { get; set; }
+    public virtual User User { get; set; } = null!;
 }

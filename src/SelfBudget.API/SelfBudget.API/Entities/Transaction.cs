@@ -40,15 +40,15 @@ public class Transaction : AuditableEntity, IBaseEntity<Guid>
     /// <summary>
     /// Со счета
     /// </summary>
-    public virtual Account FromAccount { get; set; }
+    public virtual Account FromAccount { get; set; } = null!;
 
     /// <summary>
     /// На счет
     /// </summary>
-    public virtual Account ToAccount { get; set; }
+    public virtual Account ToAccount { get; set; } = null!;
 
     /// <summary>
     /// Категория
     /// </summary>
-    public virtual TransactionCategory Category { get; set; }
+    public virtual TransactionCategory Category { get; set; } = null!;
 }

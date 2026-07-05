@@ -59,15 +59,15 @@ public class Account : AuditableEntity, IBaseEntity<Guid>
     /// <summary>
     /// Тип счета
     /// </summary>
-    public virtual AccountType Type { get; set; }
+    public virtual AccountType Type { get; set; } = null!;
 
     /// <summary>
     /// Пользователь
     /// </summary>
-    public virtual User User { get; set; }
+    public virtual User User { get; set; } = null!;
 
     /// <summary>
     /// Транзакции
     /// </summary>
-    public virtual ICollection<Transaction> Transactions { get; set; }
+    public virtual ICollection<Transaction> Transactions { get; set; } = [];
 }
