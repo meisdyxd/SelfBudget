@@ -1,0 +1,15 @@
+volumes:
+  postgres_data:
+
+services:
+  self-budget-bd:
+    image: postgres:latest
+    container_name: self-budget-bd
+    environment:
+      POSTGRES_USER: ${SELF_BUDGET_BD_USER}
+      POSTGRES_PASSWORD: ${SELF_BUDGET_BD_PASSWORD}
+      POSTGRES_DB: ${SELF_BUDGET_BD_NAME}
+    volumes:
+      - postgres_data:/var/lib/postgresql
+    ports:
+      - "5432:5432"
