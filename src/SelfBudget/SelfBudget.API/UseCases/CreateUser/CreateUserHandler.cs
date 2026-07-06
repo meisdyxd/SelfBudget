@@ -1,4 +1,4 @@
-﻿using SelfBudget.API.Abstractions;
+﻿using SelfBudget.API.Abstractions.Repositories;
 using SelfBudget.API.Entities;
 using SelfBudget.API.Services;
 
@@ -14,7 +14,7 @@ public class CreateUserHandler
     }
 
     public async Task<Guid> Handle(
-        CreateUserCommand command, 
+        CreateUserCommand command,
         CancellationToken cancellationToken)
     {
         var hashPassword = PasswordProvider.HashPassword(command.Password);
