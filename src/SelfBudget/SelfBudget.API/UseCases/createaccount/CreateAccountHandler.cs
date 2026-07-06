@@ -17,7 +17,7 @@ public class CreateAccountHandler
         _transactionManager = transactionManager;
     }
 
-    public async Task<Guid> Handler(
+    public async Task<Guid> Handle(
         CreateAccountCommand command,
         CancellationToken cancellationToken)
     {
