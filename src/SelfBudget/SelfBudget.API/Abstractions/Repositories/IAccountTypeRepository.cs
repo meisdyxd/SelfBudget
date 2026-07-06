@@ -1,7 +1,7 @@
 ﻿using SelfBudget.API.Dtos;
 using SelfBudget.API.Entities;
 
-namespace SelfBudget.API.Abstractions;
+namespace SelfBudget.API.Abstractions.Repositories;
 
 public interface IAccountTypeRepository
 {

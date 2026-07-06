@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using SelfBudget.API.Abstractions;
+using SelfBudget.API.Abstractions.Repositories;
 using SelfBudget.API.Database;
 using SelfBudget.API.Dtos;
 using SelfBudget.API.Entities;
@@ -22,7 +22,6 @@ public class UserRepository : IUserRepository
     public async Task<Guid> CreateUserAsync(User user, CancellationToken cancellationToken)
     {
         await _dbContext.Users.AddAsync(user, cancellationToken);
-        await _dbContext.SaveChangesAsync(cancellationToken);
         _logger.LogInformation("Создан пользователь с идентификатором: '{UserId}'", user.Id);
 
         return user.Id;
@@ -33,7 +32,6 @@ public class UserRepository : IUserRepository
         await _dbContext.Users
             .Where(u => u.Id == id)
             .ExecuteDeleteAsync(cancellationToken);
-        await _dbContext.SaveChangesAsync(cancellationToken);
 
         _logger.LogInformation("Удалён пользователь с идентификатором: '{UserId}'", id);
     }

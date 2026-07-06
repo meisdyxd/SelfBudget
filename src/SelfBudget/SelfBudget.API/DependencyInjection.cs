@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using SelfBudget.API.Abstractions;
+using SelfBudget.API.Abstractions.Repositories;
 using SelfBudget.API.Database;
 using SelfBudget.API.Repositories;
 using Wolverine.EntityFrameworkCore;

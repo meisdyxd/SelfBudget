@@ -8,6 +8,9 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
     public DbSet<User> Users { get; set; } = null!;
     public DbSet<Account> Accounts { get; set; } = null!;
     public DbSet<AccountType> AccountTypes { get; set; } = null!;
+    public DbSet<Transaction> Transactions { get; set; } = null!;s
+    public DbSet<TransactionCategory> TransactionCategories { get; set; } = null!;
+    public DbSet<TransactionCategoryType> TransactionCategoryTypes { get; set; } = null!;
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

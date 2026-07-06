@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using SelfBudget.API.Abstractions;
+using SelfBudget.API.Abstractions.Repositories;
 using SelfBudget.API.Database;
 using SelfBudget.API.Dtos;
 using SelfBudget.API.Entities;
@@ -22,7 +22,6 @@ public class AccountRepository : IAccountRepository
     public async Task<Guid> CreateAccountAsync(Account account, CancellationToken cancellationToken)
     {
         await _dbContext.Accounts.AddAsync(account, cancellationToken);
-        await _dbContext.SaveChangesAsync(cancellationToken);
         _logger.LogInformation("Создан счёт с идентификатором: '{AccountId}'", account.Id);
 
         return account.Id;
@@ -33,7 +32,6 @@ public class AccountRepository : IAccountRepository
         await _dbContext.Accounts
             .Where(a => a.Id == id)
             .ExecuteDeleteAsync(cancellationToken);
-        await _dbContext.SaveChangesAsync(cancellationToken);
 
         _logger.LogInformation("Удалён счёт с идентификатором: '{AccountId}'", id);
     }
