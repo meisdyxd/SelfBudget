@@ -38,27 +38,6 @@ public class UserRepository : IUserRepository
         _logger.LogInformation("Удалён пользователь с идентификатором: '{UserId}'", id);
     }
 
-    public async Task<ICollection<AccountDto>> GetAccountsByUserAsync(Guid userId, CancellationToken cancellationToken)
-    {
-        var accounts = await _dbContext.Users
-            .Where(u => u.Id == userId)
-            .SelectMany(u => u.Accounts)
-            .Select(a => new AccountDto
-            {
-                Id = a.Id,
-                Balance = a.Balance,
-                CurrencyCode = a.CurrencyCode,
-                Name = a.Name,
-                OverdraftLimit = a.OverdraftLimit,
-                Type = a.Type.Name,
-                TypeId = a.TypeId,
-            })
-            .ToListAsync(cancellationToken);
-
-        _logger.LogInformation("Получены счета у пользователся с идентификатором: '{UserId}'", userId);
-        return accounts;
-    }
-
     public async Task<ICollection<UserDto>> GetAllAsync(CancellationToken cancellationToken)
     {
         var users = await _dbContext.Users
@@ -76,7 +55,7 @@ public class UserRepository : IUserRepository
         return users;
     }
 
-    public async Task<UserDto> GetByIdAsync(Guid id, CancellationToken cancellationToken)
+    public async Task<UserDto?> GetByIdAsync(Guid id, CancellationToken cancellationToken)
     {
         var user = await _dbContext.Users
             .Where(u => u.Id == id)
@@ -91,6 +70,6 @@ public class UserRepository : IUserRepository
             .SingleOrDefaultAsync(cancellationToken);
 
         _logger.LogInformation("Получен пользователь с идентификатором: '{UserId}'", id);
-        return user!;
+        return user;
     }
 }
