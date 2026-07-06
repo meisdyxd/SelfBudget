@@ -2,7 +2,9 @@
 using SelfBudget.API.Abstractions.Repositories;
 using SelfBudget.API.Database;
 using SelfBudget.API.Repositories;
+using Wolverine;
 using Wolverine.EntityFrameworkCore;
+using Wolverine.Postgresql;
 
 namespace SelfBudget.API;
 
@@ -20,5 +22,22 @@ public static class DependencyInjection
         services.AddScoped<IUserRepository, UserRepository>();
 
         return services;
+    }
+    
+    public static IHostBuilder ConfigureWolverine(
+        this IHostBuilder host,
+        IConfiguration configuration)
+    {
+        var sectionName = "Database";
+        var connectionString = configuration.GetConnectionString(sectionName)
+            ?? throw new ArgumentNullException(sectionName, "Connection string is null");
+        
+        host.UseWolverine(opts =>
+        {
+            opts.UseRuntimeCompilation();
+            opts.UsePostgresqlPersistenceAndTransport(connectionString);
+        });
+
+        return host;
     }
 }

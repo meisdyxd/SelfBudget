@@ -22,5 +22,6 @@ public class TransactionRepository : ITransactionRepository
         await _dbContext.Transactions.AddAsync(transaction, cancellationToken);
 
         _logger.LogInformation("Создана новая транзакция с ID: '{TransactionId}'", transaction.Id);
+        return transaction.Id;
     }
 }

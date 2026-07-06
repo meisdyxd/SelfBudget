@@ -37,7 +37,8 @@ public class TransferBetweenAccountsHandler
         if ((sourceAccount.Balance + sourceAccount.OverdraftLimit) < command.Amount)
             throw new InvalidOperationException("Insufficient funds");
 
-        var transferCategoryId = await _transactionCategoryRepository.GetTransferIdAsync(cancellationToken);
+        var transferCategoryId = await _transactionCategoryRepository.GetTransferIdAsync(cancellationToken)
+            ?? throw new InvalidOperationException("Идентификатор категория перевода не найден");
 
         sourceAccount.Balance -= command.Amount;
         destinationAccount.Balance += command.Amount;

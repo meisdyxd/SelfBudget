@@ -1,7 +1,6 @@
 using SelfBudget.API;
 using SelfBudget.API.Services;
 using Wolverine;
-using Wolverine.Postgresql;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,12 +9,9 @@ var builder = WebApplication.CreateBuilder(args);
 
 var services = builder.Services;
 var configuration = builder.Configuration;
+var host = builder.Host;
 
-builder.Host.UseWolverine(opts =>
-{
-    opts.UseRuntimeCompilation();
-    opts.UsePostgresqlPersistenceAndTransport(configuration.GetConnectionString("Database"));
-});
+host.ConfigureWolverine(configuration);
 
 services
     .AddInfrastructure(configuration)
@@ -43,4 +39,4 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-app.Run();
+await app.RunAsync();
