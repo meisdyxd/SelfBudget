@@ -22,17 +22,19 @@ public class TransactionManager : ITransactionManager
 
     public IDbTransaction? CurrentTransaction => _transaction?.GetDbTransaction();
 
-    public async Task BeginTransactionAsync(IsolationLevel isolationLevel, CancellationToken cancellationToken = default)
+    public async Task BeginTransactionAsync(
+        IsolationLevel? isolationLevel,
+        CancellationToken cancellationToken = default)
     {
         if (_transaction != null)
         {
             throw new InvalidOperationException("Транзакция уже начата");
         }
-
+        var isolationLevelValue = isolationLevel ?? IsolationLevel.ReadCommitted;
         if (Connection.State != ConnectionState.Open)
             await Connection.OpenAsync(cancellationToken);
 
-        _transaction = await _dbContext.Database.BeginTransactionAsync(cancellationToken);
+        _transaction = await _dbContext.Database.BeginTransactionAsync(isolationLevelValue, cancellationToken);
     }
 
     public async Task CommitAsync(CancellationToken cancellationToken = default)
