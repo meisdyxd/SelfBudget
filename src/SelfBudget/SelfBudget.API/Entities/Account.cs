@@ -10,10 +10,10 @@ public class Account : AuditableEntity, IBaseEntity<Guid>
     protected Account() { }
 
     public Account(
-        Guid userId, 
-        string name, 
+        Guid userId,
+        string name,
         string currencyCode,
-        Guid accountTypeId)
+        Guid accountTypeId) : base()
     {
         Id = Guid.NewGuid();
         UserId = userId;

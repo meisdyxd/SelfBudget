@@ -9,7 +9,7 @@ public class Photo : AuditableEntity, IBaseEntity<Guid>
     public Photo(
         Guid userId,
         string uri,
-        int size)
+        int size) : base()
     {
         Id = Guid.NewGuid();
         UserId = userId;

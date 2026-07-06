@@ -11,7 +11,7 @@ public class Transaction : AuditableEntity, IBaseEntity<Guid>
         Guid fromAccountId,
         Guid toAccountId,
         Guid transactionCategoryId,
-        string? note = null)
+        string? note = null) : base()
     {
         Id = Guid.NewGuid();
         Amount = amount;

@@ -2,6 +2,16 @@
 
 public class AuditableEntity
 {
+    public AuditableEntity(
+        string? createdBy = null,
+        string? updatedBy = null)
+    {
+        CreatedAt = DateTime.UtcNow;
+        UpdatedAt = DateTime.UtcNow;
+        CreatedBy = createdBy;
+        UpdatedBy = updatedBy;
+    }
+
     /// <summary>
     /// Дата и время создания сущности.
     /// </summary>

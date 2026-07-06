@@ -6,7 +6,7 @@ public class Tag : AuditableEntity, IBaseEntity<Guid>
 {
     protected Tag() { }
 
-    public Tag(string name)
+    public Tag(string name) : base()
     {
         Id = Guid.NewGuid();
         Name = name;

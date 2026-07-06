@@ -8,7 +8,7 @@ public class AccountType : AuditableEntity, IBaseEntity<Guid>
 
     public AccountType(
         string name,
-        string? description)
+        string? description) : base()
     {
         Id = Guid.NewGuid();
         Name = name;
