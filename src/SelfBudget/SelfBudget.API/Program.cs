@@ -1,4 +1,5 @@
 using SelfBudget.API;
+using SelfBudget.API.Services;
 using Wolverine;
 using Wolverine.Postgresql;
 
@@ -30,6 +31,10 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
     app.MapOpenApi();
+
+    await using var scope = app.Services.CreateAsyncScope();
+    var seeder = scope.ServiceProvider.GetRequiredService<DbSeeder>();
+    await seeder.SeedAsync();
 }
 
 app.UseHttpsRedirection();
