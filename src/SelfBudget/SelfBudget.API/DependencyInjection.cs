@@ -1,7 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using SelfBudget.API.Abstractions;
 using SelfBudget.API.Abstractions.Repositories;
 using SelfBudget.API.Database;
 using SelfBudget.API.Repositories;
+using SelfBudget.API.Services;
 using Wolverine;
 using Wolverine.EntityFrameworkCore;
 using Wolverine.Postgresql;
@@ -20,6 +22,12 @@ public static class DependencyInjection
         });
 
         services.AddScoped<IUserRepository, UserRepository>();
+        services.AddScoped<ITransactionRepository, TransactionRepository>();
+        services.AddScoped<ITransactionCategoryRepository, TransactionCategoryRepository>();
+        services.AddScoped<IAccountRepository, AccountRepository>();
+        services.AddScoped<IAccountTypeRepository, AccountTypeRepository>();
+        services.AddScoped<ITransactionManager, TransactionManager>();
+        services.AddScoped<DbSeeder>();
 
         return services;
     }
