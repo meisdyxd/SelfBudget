@@ -1,4 +1,6 @@
-﻿namespace SelfBudget.API.UseCases.TransferBetweenAccounts;
+﻿using SelfBudget.API.Dtos.Requests;
+
+namespace SelfBudget.API.UseCases.TransferBetweenAccounts;
 
 public class TransferBetweenAccountsCommand
 {
@@ -7,4 +9,16 @@ public class TransferBetweenAccountsCommand
     public Guid ToAccountId { get; set; }
     public Guid TransactionCategoryId { get; set; }
     public string? Note { get; set; }
+
+    public static TransferBetweenAccountsCommand FromRequest(TransferBetweenAccountsRequest request)
+    {
+        return new()
+        {
+            Amount = request.Amount,
+            FromAccountId = request.FromAccountId,
+            ToAccountId = request.ToAccountId,
+            Note = request.Note,
+            TransactionCategoryId = request.TransactionCategoryId
+        };
+    }
 }

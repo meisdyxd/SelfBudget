@@ -7,7 +7,7 @@ namespace SelfBudget.API.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class UserController : ControllerBase
+public class UsersController : ControllerBase
 {
     [HttpGet("health")]
     public IActionResult HealthCheck()
