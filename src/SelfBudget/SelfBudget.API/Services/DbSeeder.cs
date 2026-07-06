@@ -23,6 +23,8 @@ public class DbSeeder
         await SeedAccountTypesAsync();
         await SeedUsersAsync();
         await SeedAccountsAsync();
+        await SeedTransactionCategoryTypes();
+        await SeedTransactionCategories();
         _logger.LogInformation("STOP: seed data");
     }
 
@@ -71,5 +73,74 @@ public class DbSeeder
             await _dbContext.Accounts.AddRangeAsync(account, account2);
             await _dbContext.SaveChangesAsync();
         }
+    }
+
+    private async Task SeedTransactionCategoryTypes()
+    {
+        if (await _dbContext.TransactionCategoryTypes.AnyAsync())
+            return;
+
+        var types = new[]
+        {
+        new TransactionCategoryType("Transfer"),
+        new TransactionCategoryType("Expense"),
+        new TransactionCategoryType("Income")
+    };
+
+        await _dbContext.TransactionCategoryTypes.AddRangeAsync(types);
+        await _dbContext.SaveChangesAsync();
+    }
+
+    private async Task SeedTransactionCategories()
+    {
+        if (await _dbContext.TransactionCategories.AnyAsync())
+            return;
+
+        var transferType = await _dbContext.TransactionCategoryTypes.FirstAsync(t => t.Name == "Transfer");
+        var expenseType = await _dbContext.TransactionCategoryTypes.FirstAsync(t => t.Name == "Expense");
+        var incomeType = await _dbContext.TransactionCategoryTypes.FirstAsync(t => t.Name == "Income");
+
+        var food = new TransactionCategory(expenseType.Id, "Еда", null);
+        var transport = new TransactionCategory(expenseType.Id, "Транспорт", null);
+        var shopping = new TransactionCategory(expenseType.Id, "Покупки", null);
+        var entertainment = new TransactionCategory(expenseType.Id, "Развлечения", null);
+        var utilities = new TransactionCategory(expenseType.Id, "Коммунальные услуги", null);
+        var salary = new TransactionCategory(incomeType.Id, "Зарплата", null);
+        var freelance = new TransactionCategory(incomeType.Id, "Фриланс", null);
+        var investments = new TransactionCategory(incomeType.Id, "Инвестиции", null);
+        var transfer = new TransactionCategory(transferType.Id, "Перевод между счетами", null);
+
+        await _dbContext.TransactionCategories.AddRangeAsync(
+            food, transport, shopping, entertainment, utilities,
+            salary, freelance, investments, transfer);
+        await _dbContext.SaveChangesAsync();
+
+        var subCategories = new[]
+        {
+            // еда
+            new TransactionCategory(expenseType.Id, "Рестораны", food.Id),
+            new TransactionCategory(expenseType.Id, "Кафе", food.Id),
+            new TransactionCategory(expenseType.Id, "Доставка", food.Id),
+            new TransactionCategory(expenseType.Id, "Продукты в магазине", food.Id),
+            // транспорт
+            new TransactionCategory(expenseType.Id, "Общественный транспорт", transport.Id),
+            new TransactionCategory(expenseType.Id, "Такси", transport.Id),
+            new TransactionCategory(expenseType.Id, "Личный автомобиль (топливо)", transport.Id),
+            new TransactionCategory(expenseType.Id, "Личный автомобиль (ремонт)", transport.Id),
+            // покупки
+            new TransactionCategory(expenseType.Id, "Одежда", shopping.Id),
+            new TransactionCategory(expenseType.Id, "Обувь", shopping.Id),
+            new TransactionCategory(expenseType.Id, "Техника", shopping.Id),
+            // развлечения
+            new TransactionCategory(expenseType.Id, "Подписки", entertainment.Id),
+            new TransactionCategory(expenseType.Id, "Концерты", entertainment.Id),
+            new TransactionCategory(expenseType.Id, "Кино", entertainment.Id),
+            // зарплата
+            new TransactionCategory(incomeType.Id, "Основная зарплата", salary.Id),
+            new TransactionCategory(incomeType.Id, "Премия", salary.Id),
+        };
+
+        await _dbContext.TransactionCategories.AddRangeAsync(subCategories);
+        await _dbContext.SaveChangesAsync();
     }
 }

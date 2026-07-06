@@ -9,7 +9,7 @@ public class TransactionCategory : IBaseEntity<Guid>
     public TransactionCategory(
         Guid transactionCategoryTypeId,
         string name,
-        Guid? baseCategoryId)
+        Guid? baseCategoryId = null)
     {
         TransactionCategoryTypeId = transactionCategoryTypeId;
         Name = name;
