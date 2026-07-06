@@ -1,4 +1,5 @@
-﻿using SelfBudget.API.Abstractions.Repositories;
+﻿using SelfBudget.API.Abstractions;
+using SelfBudget.API.Abstractions.Repositories;
 using SelfBudget.API.Entities;
 
 namespace SelfBudget.API.UseCases.CreateAccountType;
@@ -6,10 +7,14 @@ namespace SelfBudget.API.UseCases.CreateAccountType;
 public class CreateAccountTypeHandler
 {
     private readonly IAccountTypeRepository _repository;
+    private readonly ITransactionManager _transactionManager;
 
-    public CreateAccountTypeHandler(IAccountTypeRepository repository)
+    public CreateAccountTypeHandler(
+        IAccountTypeRepository repository,
+        ITransactionManager transactionManager)
     {
         _repository = repository;
+        _transactionManager = transactionManager;
     }
 
     public async Task<Guid> Handler(
@@ -21,7 +26,7 @@ public class CreateAccountTypeHandler
             command.Description);
 
         var result = await _repository.CreateAccountTypeAsync(accountType, cancellationToken);
-
+        await _transactionManager.SaveChangesAsync(cancellationToken);
         return result;
     }
 }
