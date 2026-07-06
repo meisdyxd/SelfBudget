@@ -98,4 +98,22 @@ public class AccountRepository : IAccountRepository
         _logger.LogInformation("Получен счёт с идентификатором: '{AccountId}'", id);
         return account;
     }
+
+    public async Task UpdateAsync(AccountDto account, CancellationToken cancellationToken)
+    {
+        await _dbContext.Accounts
+            .Where(a => a.Id == account.Id)
+            .ExecuteUpdateAsync(u =>
+            u.SetProperty(a => a.TypeId, account.TypeId)
+            .SetProperty(a => a.Name, account.Name)
+            .SetProperty(a => a.CurrencyCode, account.CurrencyCode)
+            .SetProperty(a => a.Balance, account.Balance)
+            .SetProperty(a => a.OverdraftLimit, account.OverdraftLimit),
+            cancellationToken);
+    }
+
+    public async Task PatchAsync(Account account, CancellationToken cancellationToken)
+    {
+
+    }
 }

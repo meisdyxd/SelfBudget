@@ -10,4 +10,5 @@ public interface IAccountRepository
     Task<Guid> CreateAccountAsync(Account account, CancellationToken cancellationToken);
     Task DeleteAccountAsync(Guid id, CancellationToken cancellationToken);
     Task<ICollection<AccountDto>> GetAccountsByUserAsync(Guid userId, CancellationToken cancellationToken);
+    Task UpdateAsync(AccountDto account, CancellationToken cancellationToken);
 }
