@@ -8,7 +8,7 @@ public interface ITransactionManager : IDisposable
     /// <summary>
     /// Начинает транзакцию БД
     /// </summary>
-    Task BeginTransactionAsync(IsolationLevel isolationLevel, CancellationToken cancellationToken = default);
+    Task BeginTransactionAsync(IsolationLevel? isolationLevel = null, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Сохраняет изменения через EF Core (не коммитит транзакцию)

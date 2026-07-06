@@ -23,7 +23,7 @@ public class TransactionManager : ITransactionManager
     public IDbTransaction? CurrentTransaction => _transaction?.GetDbTransaction();
 
     public async Task BeginTransactionAsync(
-        IsolationLevel? isolationLevel,
+        IsolationLevel? isolationLevel = null,
         CancellationToken cancellationToken = default)
     {
         if (_transaction != null)
