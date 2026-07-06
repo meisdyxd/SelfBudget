@@ -9,4 +9,5 @@ public sealed record AccountDto
     public decimal OverdraftLimit { get; set; }
     public string Type { get; set; } = string.Empty;
     public Guid TypeId { get; set; }
+    public Guid UserId { get; set; }
 }
