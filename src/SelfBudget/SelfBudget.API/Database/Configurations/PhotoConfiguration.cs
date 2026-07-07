@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using SelfBudget.API.Entities;
+using SelfBudget.API.Entities.UserContext;
 using SelfBudget.API.Extensions;
 
 namespace SelfBudget.API.Database.Configurations;

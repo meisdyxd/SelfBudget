@@ -1,6 +1,8 @@
 ﻿using SelfBudget.API.Abstractions;
+using SelfBudget.API.Entities.TransactionContext;
+using SelfBudget.API.Entities.UserContext;
 
-namespace SelfBudget.API.Entities;
+namespace SelfBudget.API.Entities.AccountContext;
 
 /// <summary>
 /// Счет пользователя

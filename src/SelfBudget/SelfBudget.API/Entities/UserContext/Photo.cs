@@ -1,6 +1,6 @@
 ﻿using SelfBudget.API.Abstractions;
 
-namespace SelfBudget.API.Entities;
+namespace SelfBudget.API.Entities.UserContext;
 
 public class Photo : AuditableEntity, IBaseEntity<Guid>
 {

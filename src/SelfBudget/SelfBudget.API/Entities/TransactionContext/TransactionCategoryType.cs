@@ -1,6 +1,6 @@
 ﻿using SelfBudget.API.Abstractions;
 
-namespace SelfBudget.API.Entities;
+namespace SelfBudget.API.Entities.TransactionContext;
 
 /// <summary>
 /// Справочник типов категорий транзакции

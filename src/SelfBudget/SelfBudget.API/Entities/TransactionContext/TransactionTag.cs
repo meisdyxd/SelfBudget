@@ -1,4 +1,4 @@
-﻿namespace SelfBudget.API.Entities;
+﻿namespace SelfBudget.API.Entities.TransactionContext;
 
 public class TransactionTag
 {

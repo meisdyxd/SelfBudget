@@ -1,5 +1,5 @@
 ﻿using SelfBudget.API.Dtos.UserDtos;
-using SelfBudget.API.Entities;
+using SelfBudget.API.Entities.UserContext;
 
 namespace SelfBudget.API.Abstractions.Repositories;
 

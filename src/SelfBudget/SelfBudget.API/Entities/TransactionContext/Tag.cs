@@ -1,6 +1,6 @@
 ﻿using SelfBudget.API.Abstractions;
 
-namespace SelfBudget.API.Entities;
+namespace SelfBudget.API.Entities.TransactionContext;
 
 public class Tag : AuditableEntity, IBaseEntity<Guid>
 {

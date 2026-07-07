@@ -1,6 +1,7 @@
 ﻿using SelfBudget.API.Abstractions;
+using SelfBudget.API.Entities.AccountContext;
 
-namespace SelfBudget.API.Entities;
+namespace SelfBudget.API.Entities.UserContext;
 
 /// <summary>
 /// Пользователь

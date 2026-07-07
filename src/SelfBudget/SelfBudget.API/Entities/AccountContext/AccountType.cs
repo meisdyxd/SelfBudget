@@ -1,6 +1,6 @@
 ﻿using SelfBudget.API.Abstractions;
 
-namespace SelfBudget.API.Entities;
+namespace SelfBudget.API.Entities.AccountContext;
 
 public class AccountType : AuditableEntity, IBaseEntity<Guid>
 {

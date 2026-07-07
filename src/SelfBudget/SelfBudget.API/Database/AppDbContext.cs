@@ -1,5 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using SelfBudget.API.Entities;
+using SelfBudget.API.Entities.AccountContext;
+using SelfBudget.API.Entities.TransactionContext;
+using SelfBudget.API.Entities.UserContext;
 
 namespace SelfBudget.API.Database;
 

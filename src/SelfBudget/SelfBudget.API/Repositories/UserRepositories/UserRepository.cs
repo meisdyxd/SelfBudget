@@ -2,7 +2,7 @@
 using SelfBudget.API.Abstractions.Repositories;
 using SelfBudget.API.Database;
 using SelfBudget.API.Dtos.UserDtos;
-using SelfBudget.API.Entities;
+using SelfBudget.API.Entities.UserContext;
 
 namespace SelfBudget.API.Repositories.UserRepositories;
 
