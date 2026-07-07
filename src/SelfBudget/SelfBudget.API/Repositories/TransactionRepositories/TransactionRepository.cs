@@ -4,7 +4,7 @@ using SelfBudget.API.Database;
 using SelfBudget.API.Dtos.Responses;
 using SelfBudget.API.Entities;
 
-namespace SelfBudget.API.Repositories;
+namespace SelfBudget.API.Repositories.TransactionRepositories;
 
 public class TransactionRepository : ITransactionRepository
 {

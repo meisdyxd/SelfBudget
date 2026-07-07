@@ -1,6 +1,6 @@
 ﻿using SelfBudget.API.Dtos;
 
-namespace SelfBudget.API.UseCases.GetTransfer;
+namespace SelfBudget.API.UseCases.TransferUseCases.GetTransfer;
 
 public class GetTransferQuery
 {

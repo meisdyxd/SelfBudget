@@ -1,10 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SelfBudget.API.Abstractions.Repositories;
 using SelfBudget.API.Database;
-using SelfBudget.API.Dtos;
+using SelfBudget.API.Dtos.UserDtos;
 using SelfBudget.API.Entities;
 
-namespace SelfBudget.API.Repositories;
+namespace SelfBudget.API.Repositories.UserRepositories;
 
 public class UserRepository : IUserRepository
 {

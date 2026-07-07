@@ -1,4 +1,4 @@
-﻿using SelfBudget.API.Dtos;
+﻿using SelfBudget.API.Dtos.UserDtos;
 using SelfBudget.API.Entities;
 
 namespace SelfBudget.API.Abstractions.Repositories;

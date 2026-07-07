@@ -2,7 +2,7 @@ using CSharpFunctionalExtensions;
 using Microsoft.AspNetCore.Mvc;
 using SelfBudget.API.Common;
 using SelfBudget.API.Dtos.Requests.UserRequests;
-using SelfBudget.API.UseCases.CreateUser;
+using SelfBudget.API.UseCases.UserUseCases.CreateUser;
 using Wolverine;
 
 namespace SelfBudget.API.Controllers;

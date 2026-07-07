@@ -2,13 +2,13 @@
 using SelfBudget.API.Abstractions;
 using SelfBudget.API.Abstractions.Repositories;
 using SelfBudget.API.Common;
-using SelfBudget.API.Dtos;
+using SelfBudget.API.Dtos.AccountDtos;
 using SelfBudget.API.Dtos.Responses;
 using SelfBudget.API.Entities;
 using System.Data;
 using System.Diagnostics.CodeAnalysis;
 
-namespace SelfBudget.API.UseCases.TransferBetweenAccounts;
+namespace SelfBudget.API.UseCases.TransferUseCases.TransferBetweenAccounts;
 
 public class TransferBetweenAccountsHandler
 {

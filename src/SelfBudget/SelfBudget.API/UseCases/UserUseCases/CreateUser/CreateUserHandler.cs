@@ -3,16 +3,17 @@ using SelfBudget.API.Abstractions;
 using SelfBudget.API.Abstractions.Repositories;
 using SelfBudget.API.Common;
 using SelfBudget.API.Entities;
+using SelfBudget.API.Services;
 
-namespace SelfBudget.API.UseCases.CreateAccountType;
+namespace SelfBudget.API.UseCases.UserUseCases.CreateUser;
 
-public class CreateAccountTypeHandler
+public class CreateUserHandler
 {
-    private readonly IAccountTypeRepository _repository;
+    private readonly IUserRepository _repository;
     private readonly ITransactionManager _transactionManager;
 
-    public CreateAccountTypeHandler(
-        IAccountTypeRepository repository,
+    public CreateUserHandler(
+        IUserRepository repository,
         ITransactionManager transactionManager)
     {
         _repository = repository;
@@ -20,21 +21,24 @@ public class CreateAccountTypeHandler
     }
 
     public async Task<Result<Guid, Error>> Handle(
-        CreateAccountTypeCommand command,
+        CreateUserCommand command,
         CancellationToken cancellationToken)
     {
-        var accountType = new AccountType(
+        var hashPassword = PasswordProvider.HashPassword(command.Password);
+        var user = new User(
             command.Name,
-            command.Description);
+            command.Email,
+            hashPassword,
+            command.Birthdate);
 
-        var result = await _repository.CreateAccountTypeAsync(accountType, cancellationToken);
+        await _repository.CreateUserAsync(user, cancellationToken);
         var saveResult = await _transactionManager.SaveChangesAsync(cancellationToken);
 
-        if (saveResult.IsFailure)
+        if (!saveResult.IsSuccess)
         {
             return saveResult.Error;
         }
 
-        return result;
+        return user.Id;
     }
 }

@@ -1,6 +1,6 @@
 ﻿using SelfBudget.API.Dtos.Requests.UserRequests;
 
-namespace SelfBudget.API.UseCases.CreateUser;
+namespace SelfBudget.API.UseCases.UserUseCases.CreateUser;
 
 public class CreateUserCommand
 {

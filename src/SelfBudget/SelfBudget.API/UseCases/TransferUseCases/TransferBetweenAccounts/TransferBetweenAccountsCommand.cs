@@ -1,6 +1,6 @@
 ﻿using SelfBudget.API.Dtos.Requests.TransferRequests;
 
-namespace SelfBudget.API.UseCases.TransferBetweenAccounts;
+namespace SelfBudget.API.UseCases.TransferUseCases.TransferBetweenAccounts;
 
 public class TransferBetweenAccountsCommand
 {

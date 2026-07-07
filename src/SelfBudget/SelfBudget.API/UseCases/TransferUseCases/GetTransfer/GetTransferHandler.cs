@@ -3,7 +3,7 @@ using SelfBudget.API.Abstractions.Repositories;
 using SelfBudget.API.Common;
 using SelfBudget.API.Dtos.Responses;
 
-namespace SelfBudget.API.UseCases.GetTransfer;
+namespace SelfBudget.API.UseCases.TransferUseCases.GetTransfer;
 
 public class GetTransferHandler
 {

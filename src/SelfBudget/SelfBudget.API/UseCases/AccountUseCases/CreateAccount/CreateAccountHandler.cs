@@ -1,19 +1,18 @@
-﻿using CSharpFunctionalExtensions;
+using CSharpFunctionalExtensions;
 using SelfBudget.API.Abstractions;
 using SelfBudget.API.Abstractions.Repositories;
 using SelfBudget.API.Common;
 using SelfBudget.API.Entities;
-using SelfBudget.API.Services;
 
-namespace SelfBudget.API.UseCases.CreateUser;
+namespace SelfBudget.API.UseCases.AccountUseCases.CreateAccount;
 
-public class CreateUserHandler
+public class CreateAccountHandler
 {
-    private readonly IUserRepository _repository;
+    private readonly IAccountRepository _repository;
     private readonly ITransactionManager _transactionManager;
 
-    public CreateUserHandler(
-        IUserRepository repository,
+    public CreateAccountHandler(
+        IAccountRepository repository,
         ITransactionManager transactionManager)
     {
         _repository = repository;
@@ -21,24 +20,23 @@ public class CreateUserHandler
     }
 
     public async Task<Result<Guid, Error>> Handle(
-        CreateUserCommand command,
+        CreateAccountCommand command,
         CancellationToken cancellationToken)
     {
-        var hashPassword = PasswordProvider.HashPassword(command.Password);
-        var user = new User(
+        var account = new Account(
+            command.UserId,
             command.Name,
-            command.Email,
-            hashPassword,
-            command.Birthdate);
+            command.CurrencyCode,
+            command.AccountTypeId);
 
-        await _repository.CreateUserAsync(user, cancellationToken);
+        var result = await _repository.CreateAccountAsync(account, cancellationToken);
         var saveResult = await _transactionManager.SaveChangesAsync(cancellationToken);
 
-        if (!saveResult.IsSuccess)
+        if (saveResult.IsFailure)
         {
             return saveResult.Error;
         }
 
-        return user.Id;
+        return result;
     }
 }

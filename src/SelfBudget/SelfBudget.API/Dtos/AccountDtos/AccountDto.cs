@@ -1,4 +1,4 @@
-﻿namespace SelfBudget.API.Dtos;
+﻿namespace SelfBudget.API.Dtos.AccountDtos;
 
 public sealed record AccountDto
 {

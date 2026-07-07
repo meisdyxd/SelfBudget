@@ -1,6 +1,6 @@
 ﻿using SelfBudget.API.Dtos.Requests.UserRequests;
 
-namespace SelfBudget.API.UseCases.DeleteUser;
+namespace SelfBudget.API.UseCases.UserUseCases.DeleteUser;
 
 public class DeleteUserCommand
 {

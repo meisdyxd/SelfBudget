@@ -1,6 +1,6 @@
 ﻿using SelfBudget.API.Dtos.Requests.AccountRequests;
 
-namespace SelfBudget.API.UseCases.CreateAccount;
+namespace SelfBudget.API.UseCases.AccountUseCases.CreateAccount;
 
 public class CreateAccountCommand
 {

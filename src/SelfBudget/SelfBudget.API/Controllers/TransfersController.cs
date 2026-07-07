@@ -3,8 +3,8 @@ using Microsoft.AspNetCore.Mvc;
 using SelfBudget.API.Common;
 using SelfBudget.API.Dtos.Requests.TransferRequests;
 using SelfBudget.API.Dtos.Responses;
-using SelfBudget.API.UseCases.GetTransfer;
-using SelfBudget.API.UseCases.TransferBetweenAccounts;
+using SelfBudget.API.UseCases.TransferUseCases.GetTransfer;
+using SelfBudget.API.UseCases.TransferUseCases.TransferBetweenAccounts;
 using Wolverine;
 
 namespace SelfBudget.API.Controllers;

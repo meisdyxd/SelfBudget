@@ -2,7 +2,9 @@
 using SelfBudget.API.Abstractions;
 using SelfBudget.API.Abstractions.Repositories;
 using SelfBudget.API.Database;
-using SelfBudget.API.Repositories;
+using SelfBudget.API.Repositories.AccountRepositories;
+using SelfBudget.API.Repositories.TransactionRepositories;
+using SelfBudget.API.Repositories.UserRepositories;
 using SelfBudget.API.Services;
 using Wolverine;
 using Wolverine.EntityFrameworkCore;

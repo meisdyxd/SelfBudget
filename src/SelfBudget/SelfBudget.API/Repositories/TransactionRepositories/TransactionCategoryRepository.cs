@@ -2,7 +2,7 @@
 using SelfBudget.API.Database;
 using Microsoft.EntityFrameworkCore;
 
-namespace SelfBudget.API.Repositories;
+namespace SelfBudget.API.Repositories.TransactionRepositories;
 
 public class TransactionCategoryRepository : ITransactionCategoryRepository
 {
