@@ -1,6 +1,8 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using CSharpFunctionalExtensions;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 using SelfBudget.API.Abstractions;
+using SelfBudget.API.Common;
 using SelfBudget.API.Database;
 using System.Data;
 using System.Data.Common;
@@ -11,11 +13,15 @@ public class TransactionManager : ITransactionManager
 {
     private readonly AppDbContext _dbContext;
     private IDbContextTransaction? _transaction;
+    private readonly ILogger _logger;
     private bool _disposed;
 
-    public TransactionManager(AppDbContext dbContext)
+    public TransactionManager(
+        AppDbContext dbContext,
+        ILogger<TransactionManager> logger)
     {
         _dbContext = dbContext;
+        _logger = logger;
     }
 
     public DbConnection Connection => _dbContext.Database.GetDbConnection();
@@ -59,12 +65,19 @@ public class TransactionManager : ITransactionManager
         _transaction = null;
     }
 
-    public async Task SaveChangesAsync(CancellationToken cancellationToken = default)
+    public async Task<Result<int, Error>> SaveChangesAsync(CancellationToken cancellationToken = default)
     {
         if (_transaction == null)
             throw new InvalidOperationException("Транзакция не начата");
-
-        await _dbContext.SaveChangesAsync(cancellationToken);
+        try
+        {
+            return await _dbContext.SaveChangesAsync(cancellationToken);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Ошибка при сохранении изменений в базе данных");
+            return Result.Failure<int, Error>(new Error("Ошибка при сохранении изменений в базе данных", "error.database.save_changes"));
+        }
     }
 
     public void Dispose()

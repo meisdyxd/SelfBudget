@@ -1,8 +1,12 @@
-﻿using SelfBudget.API.Abstractions;
+﻿using CSharpFunctionalExtensions;
+using SelfBudget.API.Abstractions;
 using SelfBudget.API.Abstractions.Repositories;
+using SelfBudget.API.Common;
+using SelfBudget.API.Dtos;
 using SelfBudget.API.Dtos.Responses;
 using SelfBudget.API.Entities;
 using System.Data;
+using System.Diagnostics.CodeAnalysis;
 
 namespace SelfBudget.API.UseCases.TransferBetweenAccounts;
 
@@ -25,49 +29,53 @@ public class TransferBetweenAccountsHandler
         _transactionManager = transactionManager;
     }
 
-    public async Task<TransferResponse> Handle(
+    public async Task<Result<TransferResponse, Error>> Handle(
         TransferBetweenAccountsCommand command,
         CancellationToken cancellationToken)
     {
+        var validationResult = ValidateCommand(command);
+        if (validationResult.IsFailure)
+            return validationResult.Error;
+
         await _transactionManager.BeginTransactionAsync(IsolationLevel.ReadCommitted, cancellationToken);
         try
         {
-            var sourceAccount = await _accountRepository.GetByIdAsync(command.FromAccountId, cancellationToken)
-                ?? throw new InvalidOperationException("Source account not found");
-            var destinationAccount = await _accountRepository.GetByIdAsync(command.ToAccountId, cancellationToken)
-                ?? throw new InvalidOperationException("Destination account not found");
+            var sourceAccount = await _accountRepository.GetByIdAsync(command.FromAccountId, cancellationToken);
+            var destinationAccount = await _accountRepository.GetByIdAsync(command.ToAccountId, cancellationToken);
+            var validationResultAccounts = ValidateAccounts(
+                sourceAccount,
+                destinationAccount,
+                command.Amount);
 
-            if (command.Amount <= 1)
-                throw new InvalidOperationException("Amount must be greater than unit");
+            if (validationResultAccounts.IsFailure)
+                return validationResultAccounts.Error;
 
-            if ((command.Amount * 100) % 1 != 0)
-                throw new InvalidOperationException("Amount has maximum 2 numbers after comma");
+            var transferCategoryId = await _transactionCategoryRepository.GetTransferIdAsync(cancellationToken);
+            if (transferCategoryId == null)
+                return new Error("Категория перевода не найдена");
 
-            if (sourceAccount.CurrencyCode != destinationAccount.CurrencyCode)
-                throw new InvalidOperationException("Accounts have different currencies");
-
-            if ((sourceAccount.Balance + sourceAccount.OverdraftLimit) < command.Amount)
-                throw new InvalidOperationException("Insufficient funds");
-            
-            var transferCategoryId = await _transactionCategoryRepository.GetTransferIdAsync(cancellationToken)
-                ?? throw new InvalidOperationException("Идентификатор категория перевода не найден");
-
-            sourceAccount.Balance -= command.Amount;
-            destinationAccount.Balance += command.Amount;
+            sourceAccount!.Balance -= command.Amount;
+            destinationAccount!.Balance += command.Amount;
 
             var transaction = new Transaction(
                 command.Amount,
                 sourceAccount.Id,
                 destinationAccount.Id,
-                transferCategoryId,
+                transferCategoryId.Value,
                 command.Note);
 
             await _accountRepository.UpdateAsync(sourceAccount, cancellationToken);
             await _accountRepository.UpdateAsync(destinationAccount, cancellationToken);
+
             await _transactionRepository.CreateTransactionAsync(transaction, cancellationToken);
-            await _transactionManager.SaveChangesAsync(cancellationToken);
+            var saveResult = await _transactionManager.SaveChangesAsync(cancellationToken);
+            if (saveResult.IsFailure)
+            {
+                return saveResult.Error;
+            }
+
             await _transactionManager.CommitAsync(cancellationToken);
-            return new()
+            return new TransferResponse
             {
                 Amount = command.Amount,
                 CreatedAt = transaction.CreatedAt ?? DateTime.UtcNow,
@@ -81,16 +89,38 @@ public class TransferBetweenAccountsHandler
         catch (Exception ex)
         {
             await _transactionManager.RollbackAsync(cancellationToken);
-            return new()
-            {
-                Amount = command.Amount,
-                CreatedAt = DateTime.UtcNow,
-                FromAccountId = command.FromAccountId,
-                ToAccountId = command.ToAccountId,
-                Id = Guid.Empty,
-                Note = command.Note,
-                Status = $"error: {ex.Message}"
-            };
+            return new Error("Ошибка при выполнении перевода: " + ex.Message);
         }
+    }
+
+    private static Result<bool, Error> ValidateCommand(TransferBetweenAccountsCommand command)
+    {
+        if (command.Amount <= 1)
+            return new Error("Сумма должна быть больше 1");
+
+        if ((command.Amount * 100) % 1 != 0)
+            return new Error("Сумма должна иметь не более 2 знаков после запятой");
+
+        return true;
+    }
+
+    private static Result<bool, Error> ValidateAccounts(
+        AccountDto? sourceAccount,
+        AccountDto? destinationAccount,
+        decimal amount)
+    {
+        if (sourceAccount == null)
+            return new Error("Источник счет не найден");
+
+        if (destinationAccount == null)
+            return new Error("Получатель счет не найден");
+
+        if (sourceAccount.CurrencyCode != destinationAccount.CurrencyCode)
+            return new Error("Счета должны иметь одну и ту же валюту");
+
+        if ((sourceAccount.Balance + sourceAccount.OverdraftLimit) < amount)
+            return new Error("Недостаточно средств на источнике счета");
+
+        return true;
     }
 }

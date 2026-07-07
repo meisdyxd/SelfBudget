@@ -1,4 +1,6 @@
-﻿using SelfBudget.API.Abstractions.Repositories;
+﻿using CSharpFunctionalExtensions;
+using SelfBudget.API.Abstractions.Repositories;
+using SelfBudget.API.Common;
 using SelfBudget.API.Dtos.Responses;
 
 namespace SelfBudget.API.UseCases.GetTransfer;
@@ -12,7 +14,7 @@ public class GetTransferHandler
         _transactionRepository = transactionRepository;
     }
 
-    public async Task<TransferResponse> Handle(
+    public async Task<Result<TransferResponse, Error>> Handle(
         GetTransferQuery query,
         CancellationToken cancellationToken)
     {

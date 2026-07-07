@@ -1,5 +1,7 @@
+using CSharpFunctionalExtensions;
 using Microsoft.AspNetCore.Mvc;
-using SelfBudget.API.Dtos.Requests;
+using SelfBudget.API.Common;
+using SelfBudget.API.Dtos.Requests.UserRequests;
 using SelfBudget.API.UseCases.CreateUser;
 using Wolverine;
 
@@ -23,8 +25,10 @@ public class UsersController : ControllerBase
     {
         var command = CreateUserCommand.FromRequest(request);
 
-        var result = await messageBus.InvokeAsync<Guid>(command, cancellationToken);
+        var result = await messageBus.InvokeAsync<Result<Guid, Error>>(command, cancellationToken);
+        if (result.IsFailure)
+            return BadRequest(result.Error);
 
-        return Ok(result);
+        return Ok(result.Value);
     }
 }

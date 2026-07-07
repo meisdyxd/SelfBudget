@@ -1,5 +1,7 @@
-﻿using SelfBudget.API.Abstractions;
+﻿using CSharpFunctionalExtensions;
+using SelfBudget.API.Abstractions;
 using SelfBudget.API.Abstractions.Repositories;
+using SelfBudget.API.Common;
 using SelfBudget.API.Entities;
 
 namespace SelfBudget.API.UseCases.CreateAccountType;
@@ -17,7 +19,7 @@ public class CreateAccountTypeHandler
         _transactionManager = transactionManager;
     }
 
-    public async Task<Guid> Handle(
+    public async Task<Result<Guid, Error>> Handle(
         CreateAccountTypeCommand command,
         CancellationToken cancellationToken)
     {
@@ -26,7 +28,13 @@ public class CreateAccountTypeHandler
             command.Description);
 
         var result = await _repository.CreateAccountTypeAsync(accountType, cancellationToken);
-        await _transactionManager.SaveChangesAsync(cancellationToken);
+        var saveResult = await _transactionManager.SaveChangesAsync(cancellationToken);
+
+        if (saveResult.IsFailure)
+        {
+            return saveResult.Error;
+        }
+
         return result;
     }
 }

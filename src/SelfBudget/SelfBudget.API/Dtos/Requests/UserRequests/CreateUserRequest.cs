@@ -1,4 +1,4 @@
-﻿namespace SelfBudget.API.Dtos.Requests;
+﻿namespace SelfBudget.API.Dtos.Requests.UserRequests;
 
 public class CreateUserRequest
 {

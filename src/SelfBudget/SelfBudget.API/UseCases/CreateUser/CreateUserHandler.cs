@@ -1,5 +1,7 @@
-﻿using SelfBudget.API.Abstractions;
+﻿using CSharpFunctionalExtensions;
+using SelfBudget.API.Abstractions;
 using SelfBudget.API.Abstractions.Repositories;
+using SelfBudget.API.Common;
 using SelfBudget.API.Entities;
 using SelfBudget.API.Services;
 
@@ -18,7 +20,7 @@ public class CreateUserHandler
         _transactionManager = transactionManager;
     }
 
-    public async Task<Guid> Handle(
+    public async Task<Result<Guid, Error>> Handle(
         CreateUserCommand command,
         CancellationToken cancellationToken)
     {
@@ -30,7 +32,12 @@ public class CreateUserHandler
             command.Birthdate);
 
         await _repository.CreateUserAsync(user, cancellationToken);
-        await _transactionManager.SaveChangesAsync(cancellationToken);
+        var saveResult = await _transactionManager.SaveChangesAsync(cancellationToken);
+
+        if (!saveResult.IsSuccess)
+        {
+            return saveResult.Error;
+        }
 
         return user.Id;
     }

@@ -1,5 +1,7 @@
-﻿using System.Data.Common;
+﻿using CSharpFunctionalExtensions;
+using SelfBudget.API.Common;
 using System.Data;
+using System.Data.Common;
 
 namespace SelfBudget.API.Abstractions;
 
@@ -13,7 +15,7 @@ public interface ITransactionManager : IDisposable
     /// <summary>
     /// Сохраняет изменения через EF Core (не коммитит транзакцию)
     /// </summary>
-    Task SaveChangesAsync(CancellationToken cancellationToken = default);
+    Task<Result<int, Error>> SaveChangesAsync(CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Коммитит транзакцию

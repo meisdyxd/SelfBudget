@@ -1,4 +1,4 @@
-﻿using SelfBudget.API.Dtos.Requests;
+﻿using SelfBudget.API.Dtos.Requests.UserRequests;
 
 namespace SelfBudget.API.UseCases.CreateUser;
 

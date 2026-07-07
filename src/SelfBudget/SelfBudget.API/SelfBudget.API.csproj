@@ -7,6 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="CSharpFunctionalExtensions" Version="3.7.0" />
     <PackageReference Include="Dapper" Version="2.1.79" />
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.5" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="10.0.9" />
@@ -24,10 +25,6 @@
     <PackageReference Include="WolverineFx.EntityFrameworkCore" Version="6.16.0" />
     <PackageReference Include="WolverineFx.Postgresql" Version="6.16.0" />
     <PackageReference Include="WolverineFx.RuntimeCompilation" Version="6.16.0" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="UseCases\DeleteUser\" />
   </ItemGroup>
 
 </Project>

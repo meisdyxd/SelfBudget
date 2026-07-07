@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using SelfBudget.API.Dtos.Requests;
+﻿using CSharpFunctionalExtensions;
+using Microsoft.AspNetCore.Mvc;
+using SelfBudget.API.Common;
+using SelfBudget.API.Dtos.Requests.TransferRequests;
 using SelfBudget.API.Dtos.Responses;
 using SelfBudget.API.UseCases.GetTransfer;
 using SelfBudget.API.UseCases.TransferBetweenAccounts;
@@ -24,15 +26,21 @@ public class TransfersController : ControllerBase
         CancellationToken cancellationToken)
     {
         var command = TransferBetweenAccountsCommand.FromRequest(request);
-        var result = await _messageBus.InvokeAsync<TransferResponse>(command, cancellationToken);
-        return CreatedAtAction(nameof(GetTransfer), new { id = result.Id }, result);
+        var result = await _messageBus.InvokeAsync<Result<TransferResponse, Error>>(command, cancellationToken);
+        if (result.IsFailure)
+            return BadRequest(result.Error);
+
+        return CreatedAtAction(nameof(GetTransfer), new { id = result.Value.Id }, result.Value);
     }
 
     [HttpGet("{id:guid}")]
     public async Task<ActionResult<TransferResponse>> GetTransfer(Guid id, CancellationToken cancellationToken)
     {
         var query = GetTransferQuery.FromRequest(id);
-        var result = await _messageBus.InvokeAsync<TransferResponse>(query, cancellationToken);
-        return Ok(result);
+        var result = await _messageBus.InvokeAsync<Result<TransferResponse, Error>>(query, cancellationToken);
+        if (result.IsFailure)
+            return BadRequest(result.Error);
+
+        return Ok(result.Value);
     }
 }
