@@ -4,6 +4,7 @@ using SelfBudget.API.Application.Abstractions.Repositories;
 using SelfBudget.API.Common;
 using SelfBudget.API.Common.Dtos.AccountDtos;
 using SelfBudget.API.Common.Dtos.Responses;
+using SelfBudget.API.Domain.Entities.AccountContext;
 using SelfBudget.API.Domain.Entities.TransactionContext;
 using System.Data;
 
@@ -53,13 +54,14 @@ public class TransferBetweenAccountsHandler
             if (transferCategoryId == null)
                 return new Error("Категория перевода не найдена");
 
-            sourceAccount!.Balance -= command.Amount;
-            destinationAccount!.Balance += command.Amount;
+            var resultTransfer = sourceAccount!.TransferTo(destinationAccount!, command.Amount);
+            if (resultTransfer.IsFailure)
+                return resultTransfer.Error;
 
             var transaction = new Transaction(
                 command.Amount,
                 sourceAccount.Id,
-                destinationAccount.Id,
+                destinationAccount!.Id,
                 transferCategoryId.Value,
                 command.Note);
 
@@ -104,8 +106,8 @@ public class TransferBetweenAccountsHandler
     }
 
     private static Result<bool, Error> ValidateAccounts(
-        AccountDto? sourceAccount,
-        AccountDto? destinationAccount,
+        Account? sourceAccount,
+        Account? destinationAccount,
         decimal amount)
     {
         if (sourceAccount == null)

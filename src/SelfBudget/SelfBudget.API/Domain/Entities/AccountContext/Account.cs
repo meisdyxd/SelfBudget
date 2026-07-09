@@ -1,4 +1,6 @@
-﻿using SelfBudget.API.Domain.Entities.TransactionContext;
+﻿using CSharpFunctionalExtensions;
+using SelfBudget.API.Common;
+using SelfBudget.API.Domain.Entities.TransactionContext;
 using SelfBudget.API.Domain.Entities.UserContext;
 using SelfBudget.API.Infrastructure.Abstractions;
 
@@ -79,4 +81,26 @@ public class Account : AuditableEntity, IBaseEntity<Guid>
     /// Входящие транзакции
     /// </summary>
     public virtual ICollection<Transaction> InTransactions { get; set; } = [];
+
+    /// <summary>
+    /// Перевод средств на другой счет
+    /// </summary>
+    /// <param name="targetAccount">Счет получателя</param>
+    /// <param name="amount">Сумма перевода</param>
+    /// <returns>Результат выполнения операции</returns>
+    public Result<bool, Error> TransferTo(Account targetAccount, decimal amount)
+    {
+        if (amount <= 1)
+        {
+            return new Error("Сумма перевода должна быть больше единицы.");
+        }
+        if (Balance - amount < -OverdraftLimit)
+        {
+            return new Error("Недостаточно средств для перевода.");
+        }
+        Balance -= amount;
+        targetAccount.Balance += amount;
+
+        return true;
+    }
 }

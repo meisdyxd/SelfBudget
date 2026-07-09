@@ -2,4 +2,7 @@
   <Folder Name="/src/">
     <Project Path="SelfBudget.API/SelfBudget.API.csproj" />
   </Folder>
+  <Folder Name="/tests/">
+    <Project Path="../../tests/SelfBudget.Tests/SelfBudget.Tests.csproj" Id="7edd89d0-8b88-44a1-b138-b90b76d78596" />
+  </Folder>
 </Solution>
