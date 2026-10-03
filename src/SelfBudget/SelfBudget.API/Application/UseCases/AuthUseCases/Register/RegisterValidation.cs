@@ -11,7 +11,7 @@ public class RegisterValidation : AbstractValidator<RegisterCommand>
             .WithMessage("Имя не может быть пустым")
             .MaximumLength(255)
             .WithMessage("Максимальная длина имени 255 символов")
-            .Matches("^[А-Яа-яA-Za-z]$")
+            .Matches("^[А-Яа-яA-Za-z]{1,255}$")
             .WithMessage("Имя должно состоять только из символов кириллического или латинского алфавита");
 
         RuleFor(c => c.Email)
@@ -35,7 +35,7 @@ public class RegisterValidation : AbstractValidator<RegisterCommand>
         RuleFor(c => c.Birthdate)
             .NotEmpty()
             .WithMessage("Дата рождения не может быть пустой")
-            .LessThan(DateTime.UtcNow)
+            .LessThan(DateOnly.Parse(DateTime.UtcNow.ToString("d")))
             .WithMessage("Дата рождения не может быть больше текущей");
     }
 }

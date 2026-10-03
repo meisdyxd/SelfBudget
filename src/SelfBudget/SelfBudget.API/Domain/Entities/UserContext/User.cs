@@ -14,14 +14,14 @@ public class User : AuditableEntity, IBaseEntity<Guid>
     public User(
         string name,
         EmailValueObject email,
-        DateTime birthdate,
+        DateOnly birthdate,
         Guid? photo = null) : base()
     {
         Id = Guid.NewGuid();
         Name = name;
         Email = email;
         PhotoId = photo;
-        Birthdate = birthdate.ToUniversalTime();
+        Birthdate = birthdate;
     }
 
     /// <inheritdoc/>
@@ -50,7 +50,7 @@ public class User : AuditableEntity, IBaseEntity<Guid>
     /// <summary>
     /// Дата рождения пользователя
     /// </summary>
-    public DateTime Birthdate { get; set; }
+    public DateOnly Birthdate { get; set; }
 
     /// <summary>
     /// Навигационная сущность фото

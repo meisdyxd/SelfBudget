@@ -54,11 +54,11 @@ public class DbSeeder
             return;
         }
         var passwordHasher = new PasswordHasher<User>();
-        var user = new User("Admin", EmailValueObject.Create("admin@admin.ru").Value, new DateTime(1990, 1, 1, 0, 0, 0, DateTimeKind.Utc));
+        var user = new User("Admin", EmailValueObject.Create("admin@admin.ru").Value, new DateOnly(1990, 1, 1));
         var password = passwordHasher.HashPassword(user, "admin123");
         user.SetHashPassword(password);
 
-        var user2 = new User("meisdy", EmailValueObject.Create("kararturkar@gmail.com").Value, new DateTime(2005, 2, 1, 20, 35, 0, DateTimeKind.Utc));
+        var user2 = new User("meisdy", EmailValueObject.Create("kararturkar@gmail.com").Value, new DateOnly(2005, 2, 1));
         var password2 = passwordHasher.HashPassword(user2, "01022005");
         user2.SetHashPassword(password2);
 

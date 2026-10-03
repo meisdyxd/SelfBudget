@@ -42,6 +42,7 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
 
         builder.Property(u => u.Birthdate)
             .HasColumnName("birthdate")
+            .HasColumnType("date")
             .IsRequired();
 
         // AuditableEntity

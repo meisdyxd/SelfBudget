@@ -9,6 +9,6 @@ public static class ValidationResultExtensions
     {
         var firstError = validationResult.Errors.First();
 
-        return new Error(firstError.ErrorMessage, $"error.{contextName}.validation")
+        return new Error(firstError.ErrorMessage, $"error.{contextName}.validation");
     }
 }
