@@ -1,4 +1,4 @@
-﻿namespace SelfBudget.API.Common.Dtos.Responses;
+﻿namespace SelfBudget.API.Common.Dtos.Responses.TransferResponses;
 
 public class TransferResponse
 {
