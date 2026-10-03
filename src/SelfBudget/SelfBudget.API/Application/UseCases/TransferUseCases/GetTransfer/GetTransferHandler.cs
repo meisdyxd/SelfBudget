@@ -1,7 +1,7 @@
 ﻿using CSharpFunctionalExtensions;
 using SelfBudget.API.Application.Abstractions.Repositories;
 using SelfBudget.API.Common;
-using SelfBudget.API.Common.Dtos.Responses;
+using SelfBudget.API.Common.Dtos.Responses.TransferResponses;
 
 namespace SelfBudget.API.Application.UseCases.TransferUseCases.GetTransfer;
 

@@ -3,7 +3,7 @@ using SelfBudget.API.Application.Abstractions;
 using SelfBudget.API.Application.Abstractions.Repositories;
 using SelfBudget.API.Common;
 using SelfBudget.API.Common.Dtos.AccountDtos;
-using SelfBudget.API.Common.Dtos.Responses;
+using SelfBudget.API.Common.Dtos.Responses.TransferResponses;
 using SelfBudget.API.Domain.Entities.AccountContext;
 using SelfBudget.API.Domain.Entities.TransactionContext;
 using System.Data;
