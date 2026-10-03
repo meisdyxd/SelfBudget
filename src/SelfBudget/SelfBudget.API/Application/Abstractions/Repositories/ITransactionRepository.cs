@@ -1,4 +1,4 @@
-﻿using SelfBudget.API.Common.Dtos.Responses;
+﻿using SelfBudget.API.Common.Dtos.Responses.TransferResponses;
 using SelfBudget.API.Domain.Entities.TransactionContext;
 
 namespace SelfBudget.API.Application.Abstractions.Repositories;
