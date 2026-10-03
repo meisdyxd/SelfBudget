@@ -35,7 +35,7 @@ public class User : AuditableEntity, IBaseEntity<Guid>
     /// <summary>
     /// Электронная почта пользователя
     /// </summary>
-    public EmailValueObject Email { get; set; }
+    public EmailValueObject Email { get; set; } = null!;
 
     /// <summary>
     /// Идентификатор фотографии пользователя

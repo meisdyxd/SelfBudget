@@ -14,7 +14,7 @@ public class GetTransferHandler
         _transactionRepository = transactionRepository;
     }
 
-    public async Task<Result<TransferResponse, Error>> Handle(
+    public async Task<Result<TransferResponse?, Error>> Handle(
         GetTransferQuery query,
         CancellationToken cancellationToken)
     {

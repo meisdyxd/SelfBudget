@@ -60,6 +60,8 @@ public class RegisterHandler
 
         if (!saveResult.IsSuccess)
         {
+            if (saveResult.Error.Code is not null && saveResult.Error.Code.Contains("email"))
+                return new Error("Уже существует пользователь с указанным email", "error.register.conflict");
             return saveResult.Error;
         }
 

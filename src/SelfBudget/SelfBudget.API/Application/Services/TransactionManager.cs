@@ -71,6 +71,11 @@ public class TransactionManager : ITransactionManager
         {
             return await _dbContext.SaveChangesAsync(cancellationToken);
         }
+        catch (DbUpdateException ex)
+        {
+            _logger.LogError(ex, "Ошибка при сохранении изменений");
+            return Result.Failure<int, Error>(new Error("Нарушение ограничений", $@"error.database.save_changes.{string.Join('_', ex.Entries)}"));
+        }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Ошибка при сохранении изменений в базе данных");

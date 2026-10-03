@@ -8,5 +8,5 @@ public class TransferResponse
     public decimal Amount { get; set; }
     public string? Note { get; set; }
     public DateTime CreatedAt { get; set; }
-    public string Status { get; set; }
+    public string Status { get; set; } = null!;
 }
