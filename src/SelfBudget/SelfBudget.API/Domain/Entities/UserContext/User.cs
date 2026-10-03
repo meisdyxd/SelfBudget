@@ -14,7 +14,6 @@ public class User : AuditableEntity, IBaseEntity<Guid>
     public User(
         string name,
         EmailValueObject email,
-        string passwordHash,
         DateTime birthdate,
         Guid? photo = null) : base()
     {
@@ -22,7 +21,6 @@ public class User : AuditableEntity, IBaseEntity<Guid>
         Name = name;
         Email = email;
         PhotoId = photo;
-        PasswordHash = passwordHash;
         Birthdate = birthdate;
     }
 
@@ -63,4 +61,9 @@ public class User : AuditableEntity, IBaseEntity<Guid>
     /// Счета пользователя
     /// </summary>
     public virtual ICollection<Account> Accounts { get; set; } = [];
+
+    public void SetHashPassword(string passwordHash)
+    {
+        PasswordHash = passwordHash;
+    }
 }
