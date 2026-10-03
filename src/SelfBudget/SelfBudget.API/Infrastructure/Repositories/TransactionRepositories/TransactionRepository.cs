@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SelfBudget.API.Application.Abstractions.Repositories;
-using SelfBudget.API.Common.Dtos.Responses;
+using SelfBudget.API.Common.Dtos.Responses.TransferResponses;
 using SelfBudget.API.Domain.Entities.TransactionContext;
 using SelfBudget.API.Infrastructure.Database;
 

@@ -1,34 +1,43 @@
 using CSharpFunctionalExtensions;
 using Microsoft.AspNetCore.Mvc;
-using SelfBudget.API.Application.UseCases.UserUseCases.CreateUser;
+using SelfBudget.API.Application.UseCases.UserUseCases.GetUserById;
 using SelfBudget.API.Common;
-using SelfBudget.API.Common.Dtos.Requests.UserRequests;
+using SelfBudget.API.Common.Dtos.UserDtos;
 using Wolverine;
 
 namespace SelfBudget.API.Api.Controllers;
 
 [ApiController]
-[Route("[controller]")]
+[Route("api/[controller]")]
 public class UsersController : ControllerBase
 {
+    private readonly IMessageBus _messageBus;
+
+    public UsersController(IMessageBus messageBus)
+    {
+        _messageBus = messageBus;
+    }
+
     [HttpGet("health")]
     public IActionResult HealthCheck()
     {
         return Ok();
     }
 
-    [HttpPost("")]
-    public async Task<IActionResult> CreateUser(
-        [FromBody] CreateUserRequest request,
-        [FromServices] IMessageBus messageBus,
-        CancellationToken cancellationToken)
+    [HttpGet("{id:guid}", Name = "GetUserById")]
+    public async Task<ActionResult<UserDto>> GetUserById(Guid id, CancellationToken cancellationToken)
     {
-        var command = CreateUserCommand.FromRequest(request);
+        var query = new GetUserByIdQuery(id);
+        var userResult = await _messageBus.InvokeAsync<Result<UserDto, Error>>(query, cancellationToken);
 
-        var result = await messageBus.InvokeAsync<Result<Guid, Error>>(command, cancellationToken);
-        if (result.IsFailure)
-            return BadRequest(result.Error);
+        if (userResult.IsFailure)
+        {
+            if (!string.IsNullOrEmpty(userResult.Error.Code) && userResult.Error.Code.Contains("notfound"))
+                return NotFound(userResult.Error);
 
-        return Ok(result.Value);
+            return BadRequest(userResult.Error);
+        }
+
+        return Ok(userResult.Value);
     }
 }

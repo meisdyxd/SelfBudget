@@ -2,6 +2,7 @@
 using SelfBudget.API.Application.Abstractions.Repositories;
 using SelfBudget.API.Common.Dtos.UserDtos;
 using SelfBudget.API.Domain.Entities.UserContext;
+using SelfBudget.API.Domain.ValueObjects;
 using SelfBudget.API.Infrastructure.Database;
 
 namespace SelfBudget.API.Infrastructure.Repositories.UserRepositories;
@@ -69,5 +70,15 @@ public class UserRepository : IUserRepository
 
         _logger.LogInformation("Получен пользователь с идентификатором: '{UserId}'", id);
         return user;
+    }
+
+    public async Task<bool> IsExistsByEmail(EmailValueObject email, CancellationToken cancellationToken)
+    {
+        _logger.LogInformation("Проверка существования пользователя по почте: {Email}", email.Value);
+        var user = await _dbContext.Users
+            .AsNoTracking()
+            .FirstOrDefaultAsync(u => u.Email == email, cancellationToken);
+
+        return user is not null;
     }
 }

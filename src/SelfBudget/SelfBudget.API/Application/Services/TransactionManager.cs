@@ -1,6 +1,7 @@
 ﻿using CSharpFunctionalExtensions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
+using Npgsql;
 using SelfBudget.API.Application.Abstractions;
 using SelfBudget.API.Common;
 using SelfBudget.API.Infrastructure.Database;
@@ -70,6 +71,24 @@ public class TransactionManager : ITransactionManager
         try
         {
             return await _dbContext.SaveChangesAsync(cancellationToken);
+        }
+        catch (DbUpdateException ex)
+        {
+            var postgresException = ex.InnerException as PostgresException;
+
+            if (postgresException?.SqlState == PostgresErrorCodes.UniqueViolation
+                && postgresException.ConstraintName == "IX_users_email")
+            {
+                _logger.LogInformation("Нарушение уникальности email пользователя");
+                return Result.Failure<int, Error>(new Error(
+                    "Нарушена уникальность email пользователя",
+                    "persistence.user.email_duplicate"));
+            }
+
+            _logger.LogError(ex, "Ошибка при сохранении изменений в базе данных");
+            return Result.Failure<int, Error>(new Error(
+                "Нарушение ограничений при сохранении изменений",
+                "error.database.save_changes"));
         }
         catch (Exception ex)
         {

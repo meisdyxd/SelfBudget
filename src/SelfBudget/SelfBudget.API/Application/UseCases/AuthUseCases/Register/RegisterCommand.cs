@@ -1,17 +1,17 @@
-﻿using SelfBudget.API.Common.Dtos.Requests.UserRequests;
+﻿using SelfBudget.API.Common.Dtos.Requests.AuthRequests;
 
-namespace SelfBudget.API.Application.UseCases.UserUseCases.CreateUser;
+namespace SelfBudget.API.Application.UseCases.AuthUseCases.Register;
 
-public class CreateUserCommand
+public class RegisterCommand
 {
     public string Name { get; set; } = string.Empty;
     public string Email { get; set; } = string.Empty;
     public string Password { get; set; } = string.Empty;
-    public DateTime Birthdate { get; set; }
+    public DateOnly Birthdate { get; set; }
 
-    public static CreateUserCommand FromRequest(CreateUserRequest request)
+    public static RegisterCommand FromRequest(RegisterRequest request)
     {
-        return new CreateUserCommand
+        return new RegisterCommand
         {
             Name = request.Name,
             Email = request.Email,

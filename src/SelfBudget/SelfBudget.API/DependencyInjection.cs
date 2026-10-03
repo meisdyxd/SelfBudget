@@ -1,7 +1,10 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using FluentValidation;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using SelfBudget.API.Application.Abstractions;
 using SelfBudget.API.Application.Abstractions.Repositories;
 using SelfBudget.API.Application.Services;
+using SelfBudget.API.Application.UseCases.AuthUseCases.Register;
 using SelfBudget.API.Infrastructure.Database;
 using SelfBudget.API.Infrastructure.Repositories.AccountRepositories;
 using SelfBudget.API.Infrastructure.Repositories.TransactionRepositories;
@@ -30,6 +33,15 @@ public static class DependencyInjection
         services.AddScoped<IAccountTypeRepository, AccountTypeRepository>();
         services.AddScoped<ITransactionManager, TransactionManager>();
         services.AddScoped<DbSeeder>();
+
+        return services;
+    }
+
+    public static IServiceCollection AddApplication(
+        this IServiceCollection services,
+        IConfiguration configuration)
+    {
+        services.AddValidatorsFromAssemblyContaining<RegisterValidation>();
 
         return services;
     }

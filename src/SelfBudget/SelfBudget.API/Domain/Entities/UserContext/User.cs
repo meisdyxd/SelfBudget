@@ -14,15 +14,13 @@ public class User : AuditableEntity, IBaseEntity<Guid>
     public User(
         string name,
         EmailValueObject email,
-        string passwordHash,
-        DateTime birthdate,
+        DateOnly birthdate,
         Guid? photo = null) : base()
     {
         Id = Guid.NewGuid();
         Name = name;
         Email = email;
         PhotoId = photo;
-        PasswordHash = passwordHash;
         Birthdate = birthdate;
     }
 
@@ -37,7 +35,7 @@ public class User : AuditableEntity, IBaseEntity<Guid>
     /// <summary>
     /// Электронная почта пользователя
     /// </summary>
-    public EmailValueObject Email { get; set; }
+    public EmailValueObject Email { get; set; } = null!;
 
     /// <summary>
     /// Идентификатор фотографии пользователя
@@ -52,7 +50,7 @@ public class User : AuditableEntity, IBaseEntity<Guid>
     /// <summary>
     /// Дата рождения пользователя
     /// </summary>
-    public DateTime Birthdate { get; set; }
+    public DateOnly Birthdate { get; set; }
 
     /// <summary>
     /// Навигационная сущность фото
@@ -63,4 +61,9 @@ public class User : AuditableEntity, IBaseEntity<Guid>
     /// Счета пользователя
     /// </summary>
     public virtual ICollection<Account> Accounts { get; set; } = [];
+
+    public void SetHashPassword(string passwordHash)
+    {
+        PasswordHash = passwordHash;
+    }
 }

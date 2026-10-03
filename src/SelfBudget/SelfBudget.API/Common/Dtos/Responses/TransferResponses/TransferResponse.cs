@@ -1,4 +1,4 @@
-﻿namespace SelfBudget.API.Common.Dtos.Responses;
+﻿namespace SelfBudget.API.Common.Dtos.Responses.TransferResponses;
 
 public class TransferResponse
 {
@@ -8,5 +8,5 @@ public class TransferResponse
     public decimal Amount { get; set; }
     public string? Note { get; set; }
     public DateTime CreatedAt { get; set; }
-    public string Status { get; set; }
+    public string Status { get; set; } = null!;
 }
