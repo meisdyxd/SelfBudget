@@ -14,11 +14,12 @@ public sealed class EmailValueObject : ValueObject
 
     protected override IEnumerable<object> GetEqualityComponents()
     {
-        throw new NotImplementedException();
+        return [Value];
     }
 
     public static Result<EmailValueObject, Error> Create(string value)
     {
+        value = value.Trim();
         if (value.Length < 5 
             || value.Length > 1024 
             || !value.Contains('@') 
@@ -26,6 +27,6 @@ public sealed class EmailValueObject : ValueObject
             || value.Split('@')[1].Length < 3)
             return new Error("Ошибка валидации почты", "error.email.validation");
 
-        return new EmailValueObject(value);
+        return new EmailValueObject(value.ToLower());
     }
 }
