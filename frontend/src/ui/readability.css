@@ -1,0 +1,208 @@
+/* Shared type sizes for the banking screens. Keep helper text readable at 100% zoom. */
+.app-shell .workspace-label,
+.app-shell .section-kicker,
+.app-shell .balance-label{font-size:12px}
+.app-shell .nav-item{font-size:14px}
+.app-shell .nav-count{font-size:12px}
+.app-shell .help-card p,.app-shell .help-card>a{font-size:13px}
+.app-shell .profile-copy b{font-size:13px}
+.app-shell .profile-copy small{font-size:12px}
+.app-shell .breadcrumb{font-size:13px}
+.app-shell .connection{font-size:12px}
+.app-shell .avatar-small{font-size:13px}
+.app-shell .eyebrow{font-size:12px}
+.app-shell .welcome-subtitle{font-size:15px}
+.app-shell .button{font-size:14px}
+.app-shell .api-banner b{font-size:13px}
+.app-shell .api-banner p,.app-shell .api-banner code{font-size:13px}
+.app-shell .balance-chip,.app-shell .balance-subtle{font-size:12px}
+.app-shell .balance-amount .balance-currency-total small{font-size:12px}
+.app-shell .stat-caption{font-size:13px}
+.app-shell .stat-foot{font-size:12px}
+.app-shell .title-count{font-size:12px}
+.app-shell .select-wrap select{font-size:13px}
+.app-shell .account-type,.app-shell .account-currency{font-size:12px}
+.app-shell .account-name{font-size:14px}
+.app-shell .account-transfer{font-size:12px}
+.app-shell .empty-state h3{font-size:16px}
+.app-shell .empty-state p{font-size:14px}
+.app-shell .local-note{font-size:12px}
+.app-shell .transfer-info>b{font-size:14px}
+.app-shell .transfer-info small{font-size:12px}
+.app-shell .transfer-amount{font-size:14px}
+.app-shell .activity-empty b{font-size:13px}
+.app-shell .activity-empty small{font-size:12px}
+.app-shell .text-button{font-size:12px}
+.app-shell .page-footer{font-size:12px}
+.app-shell .field-label{font-size:13px}
+.app-shell .field-label select,.app-shell .field-label>input,.app-shell .amount-input{font-size:14px}
+.app-shell .amount-input span{font-size:12px}
+.app-shell .modal-hint,.app-shell .disabled-hint{font-size:12px}
+.app-shell .form-error{font-size:13px}
+.app-shell .toast{font-size:13px}
+
+.app-shell .transfer-modal .field-label{font-size:14px}
+.app-shell .transfer-modal .field-label select,
+.app-shell .transfer-modal .field-label>input,
+.app-shell .transfer-modal .amount-input{font-size:15px}
+.app-shell .transfer-modal .amount-input span{font-size:13px}
+.app-shell .transfer-modal .modal-hint,.app-shell .transfer-modal .disabled-hint{font-size:13px}
+.transfer-description,.transfer-amount-hint,.retry-hint{font-size:13px}
+.receipt-status{font-size:14px}
+.receipt-account>span,.receipt-note>span{font-size:12px}
+.receipt-account>b,.receipt-note>b{font-size:14px}
+.receipt-meta dt,.receipt-meta dd{font-size:13px}
+.receipt-close{font-size:15px}
+
+.account-details-eyebrow,.account-details-balance-label{font-size:12px}
+.account-details-type{font-size:14px}
+.account-details-code,.account-details-limit{font-size:15px}
+.account-details-code b,.account-details-limit b{font-size:14px}
+.details-return,.details-retry{font-size:14px}
+.account-details-error p{font-size:14px}
+
+.history-eyebrow{font-size:12px}
+.history-filter-grid>label{font-size:13px}
+.history-filter-grid select,.history-date-control input{font-size:14px}
+.history-reset{font-size:13px}
+.history-filter-options-error,.history-filter-options-error button,.history-inline-error{font-size:13px}
+.history-results-heading>span,.history-day-group h3{font-size:13px}
+.history-operation-copy>b,.history-operation-copy b{font-size:15px}
+.history-operation-copy small{font-size:13px}
+.history-operation-amount{font-size:15px}
+.history-empty>b{font-size:16px}
+.history-empty>p,.history-error p,.history-detail-error p{font-size:14px}
+.history-empty button,.history-error button,.history-detail-actions button,.history-detail-actions a{font-size:13px}
+.history-error b,.history-more-error,.history-more-error button{font-size:13px}
+.history-detail-kind,.history-detail-date{font-size:14px}
+.history-detail-fields dt,.history-detail-fields dd{font-size:14px}
+
+@media(max-width:620px){
+  .app-shell .connection{font-size:0}
+  .app-shell .eyebrow{font-size:11px}
+  .app-shell .stat-caption{font-size:12px}
+  .app-shell .stat-foot{font-size:12px}
+  .app-shell .account-name{font-size:12px}
+  .app-shell .account-transfer{font-size:12px}
+  .app-shell .local-note{font-size:11px}
+  .app-shell .page-footer{font-size:11px}
+  .app-shell .transfer-modal .modal-header h2{font-size:20px}
+  .transfer-description,.transfer-amount-hint,.retry-hint{font-size:12px}
+  .receipt-account>b{font-size:13px}
+  .receipt-meta dt,.receipt-meta dd{font-size:12px}
+
+  .account-details-back{font-size:14px}
+  .account-details-eyebrow{font-size:11px}
+  .account-details-intro,.account-details-error p{font-size:14px}
+  .account-details-type{font-size:13px}
+  .account-details-card-heading h2{font-size:19px}
+  .account-details-balance-label{font-size:12px}
+  .account-details-code,.account-details-limit{font-size:13px}
+  .account-details-code b,.account-details-limit b{font-size:13px}
+  .account-details-error h2{font-size:19px}
+
+  .history-eyebrow{font-size:11px}
+  .history-filter-grid>label{font-size:12px}
+  .history-filter-grid select,.history-date-control input{font-size:13px}
+  .history-results-heading>span,.history-day-group h3{font-size:12px}
+  .history-operation-copy>b,.history-operation-copy b{font-size:14px}
+  .history-operation-copy small{font-size:12px}
+  .history-operation-amount{font-size:14px}
+  .history-empty>p,.history-error p,.history-detail-error p{font-size:13px}
+  .history-detail-fields dt,.history-detail-fields dd{font-size:13px}
+}
+
+/* Keep board and sign-in support text readable at normal zoom. */
+.project-board .board-workspace-label,
+.project-board .board-sidebar-heading,
+.project-board .board-section-link-copy small,
+.project-board .board-save-state,
+.project-board .board-back-link,
+.project-board .board-breadcrumb,
+.project-board .board-local-badge,
+.project-board .board-eyebrow,
+.project-board .board-section-kicker,
+.project-board .board-intro-row p,
+.project-board .board-summary>article small,
+.project-board .board-summary-total,
+.project-board .board-feature-heading p,
+.project-board .board-feature-progress,
+.project-board .board-task-meta,
+.project-board .board-detail-label,
+.project-board .board-detail-meta span,
+.project-board .board-status-field,
+.project-board .board-note-field,
+.project-board .board-note-hint,
+.project-board .board-updated-at,
+.project-board .board-footer {
+  color: #6f6d75;
+}
+.project-board .board-workspace-label,
+.project-board .board-sidebar-heading,
+.project-board .board-eyebrow,
+.project-board .board-section-kicker {font-size:12px}
+.project-board .board-section-link-copy b {font-size:14px}
+.project-board .board-section-link-copy small,
+.project-board .board-save-state,
+.project-board .board-back-link {font-size:13px}
+.project-board .board-breadcrumb {font-size:14px}
+.project-board .board-local-badge {font-size:13px}
+.project-board .board-intro-row p {font-size:16px}
+.project-board .board-summary>article small {font-size:14px}
+.project-board .board-feature-heading p {font-size:15px}
+.project-board .board-feature-progress {font-size:13px}
+.project-board .board-task-title-row>b {font-size:15px}
+.project-board .board-task-meta {font-size:13px}
+.project-board .board-status-pill {font-size:12px}
+.project-board .board-detail-label {font-size:12px}
+.project-board .board-detail-meta span {font-size:12px}
+.project-board .board-description {color:#5e5d64;font-size:16px}
+.project-board .board-markdown h4 {font-size:14px}
+.project-board .board-markdown code {font-size:12px}
+.project-board .board-task-source {font-size:12px}
+.project-board .board-status-field,
+.project-board .board-note-field {font-size:14px}
+.project-board .board-status-field select,
+.project-board .board-note-field textarea {font-size:15px}
+.project-board .board-note-hint,
+.project-board .board-updated-at,
+.project-board .board-footer {font-size:12px}
+.project-board .board-detail-actions button {font-size:14px}
+.auth-panel .auth-kicker {color:#74716b;font-size:13px}
+.auth-panel .auth-subtitle {color:#74727a;font-size:16px}
+.auth-panel .auth-field {font-size:14px}
+.auth-panel .auth-field>input,
+.auth-panel .auth-password-wrap input {font-size:17px}
+.auth-panel .auth-password-hint {font-size:13px}
+.auth-panel .auth-submit {font-size:15px}
+.auth-panel .auth-error,
+.auth-panel .auth-notice {font-size:14px}
+.auth-panel .auth-privacy,
+.auth-panel .auth-footer {color:#74716b;font-size:13px}
+.auth-story-content>p {font-size:17px}
+.auth-eyebrow {font-size:12px}
+.auth-points b {font-size:15px}
+.auth-points small {font-size:14px}
+.auth-demo-note {font-size:13px}
+
+@media(max-width:620px){
+  .project-board .board-section-link-copy b {font-size:13px}
+  .project-board .board-intro-row p {font-size:14px}
+  .project-board .board-summary>article small {font-size:12px}
+  .project-board .board-feature-heading p {font-size:14px}
+  .project-board .board-task-title-row>b {font-size:14px}
+  .project-board .board-task-meta {font-size:12px}
+  .project-board .board-description {font-size:14px}
+  .project-board .board-task-source {font-size:11px}
+  .auth-panel .auth-subtitle {font-size:15px}
+  .auth-panel .auth-field>input,
+  .auth-panel .auth-password-wrap input {font-size:16px}
+  .auth-panel .auth-submit {font-size:14px}
+  .auth-panel .auth-privacy,
+  .auth-panel .auth-footer {font-size:12px}
+  .auth-story-content>p {font-size:14px}
+  .auth-eyebrow {font-size:11px}
+  .auth-points b {font-size:14px}
+  .auth-points small {font-size:13px}
+  .auth-demo-note {font-size:12px}
+}

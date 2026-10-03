@@ -1,0 +1,28 @@
+.balance-amount.balance-amount-multi {
+  display: flex;
+  align-items: center;
+  margin-top: 14px;
+  font-size: clamp(17px, 2.1vw, 25px);
+  line-height: 1.25;
+  white-space: normal;
+}
+
+.balance-amount-multi .balance-currency-list {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 14px;
+}
+
+.balance-amount .balance-currency-total {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 6px;
+  white-space: nowrap;
+}
+
+.balance-amount .balance-currency-total small {
+  color: #c3bfd1;
+  font: 700 9px 'DM Sans', sans-serif;
+  letter-spacing: .45px;
+}

@@ -1,0 +1,44 @@
+.app-shell .transfer-modal{width:min(100%,480px);padding:26px}
+.app-shell .transfer-modal form{gap:15px}
+.app-shell .transfer-modal .field-label{gap:8px;font-size:13px}
+.app-shell .transfer-modal .field-label select,.app-shell .transfer-modal .field-label>input,.app-shell .transfer-modal .amount-input{height:48px;font-size:14px}
+.app-shell .transfer-modal .amount-input input{font-size:17px}
+.app-shell .transfer-modal .amount-input span{font-size:12px}
+.transfer-description{margin:-12px 0 20px;color:#85838a;font-size:13px;line-height:1.55}
+.transfer-amount-hint{margin:-10px 0 0;color:#96939a;font-size:12px}
+.retry-hint{display:block;margin-top:5px;color:#936a58;font-size:12px;font-weight:400}
+.app-shell .transfer-modal .modal-hint{font-size:12px}
+.app-shell .transfer-modal .submit-button{height:48px;font-size:14px}
+.app-shell .transfer-modal .disabled-hint{font-size:12px}
+.transfer-receipt-modal{max-height:min(90vh,760px);overflow:auto}
+.receipt-heading{display:flex;align-items:center;gap:12px}
+.receipt-success-icon{width:42px;height:42px;display:grid;place-items:center;border-radius:13px;background:#edf6ef;color:#589a72}
+.receipt-status{margin:-10px 0 17px;color:#85838a;font-size:13px;line-height:1.5}
+.receipt-amount{margin:0 0 20px;color:#34353b;font:700 clamp(29px,5vw,38px)/1.2 Manrope,sans-serif;letter-spacing:-.8px;overflow-wrap:anywhere}
+.receipt-route{display:grid;grid-template-columns:minmax(0,1fr) 32px minmax(0,1fr);align-items:center;gap:10px;padding:15px 0;border-top:1px solid #efede8;border-bottom:1px solid #efede8}
+.receipt-account{display:grid;gap:5px;min-width:0}
+.receipt-account>span,.receipt-note>span{color:#9d9aa1;font-size:10px;font-weight:700;letter-spacing:.8px}
+.receipt-account>b{overflow:hidden;color:#4c4b53;font-size:13px;text-overflow:ellipsis;white-space:nowrap}
+.receipt-transfer-icon{width:30px;height:30px;display:grid;place-items:center;border-radius:9px;background:#f2eff9;color:#8064c9}
+.receipt-note{display:grid;gap:5px;margin-top:15px;padding:12px;border-radius:9px;background:#faf9f6}
+.receipt-note>b{color:#59575f;font-size:13px;overflow-wrap:anywhere}
+.receipt-meta{display:grid;gap:0;margin:15px 0 0}
+.receipt-meta>div{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.2fr);gap:14px;padding:11px 0;border-bottom:1px solid #f0eee9}
+.receipt-meta>div:last-child{border-bottom:0}
+.receipt-meta dt{color:#88868e;font-size:12px}
+.receipt-meta dd{margin:0;color:#47464e;font-size:12px;font-weight:600;text-align:right;overflow-wrap:anywhere}
+.receipt-close{width:100%;height:46px;margin-top:20px;font-size:14px}
+.transfer-modal button:focus-visible{outline:3px solid #a18be6;outline-offset:3px}
+@media(max-width:520px){
+  .app-shell .transfer-modal{padding:19px;border-radius:14px}
+  .app-shell .transfer-modal .modal-header h2{font-size:19px}
+  .app-shell .transfer-modal .field-label{font-size:12px}
+  .app-shell .transfer-modal .field-label select,.app-shell .transfer-modal .field-label>input,.app-shell .transfer-modal .amount-input{height:46px;font-size:14px}
+  .transfer-description{font-size:12px}
+  .transfer-amount-hint,.retry-hint{font-size:11px}
+  .receipt-heading{gap:9px}
+  .receipt-success-icon{width:36px;height:36px}
+  .receipt-account>b{font-size:11px}
+  .receipt-meta>div{grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);gap:8px}
+  .receipt-meta dt,.receipt-meta dd{font-size:11px}
+}

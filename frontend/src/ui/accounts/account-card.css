@@ -1,0 +1,12 @@
+.app-shell .account-name{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:13px}
+.app-shell .account-balance{font-size:clamp(16px,1.25vw,20px)}
+.app-shell .account-open-button{color:#755bc3}
+.app-shell .account-card button:focus-visible{outline:3px solid #a18be6;outline-offset:3px}
+.app-shell .account-transfer:disabled{opacity:.45;cursor:not-allowed}
+@media(max-width:520px){
+  .app-shell .account-card{min-height:160px;height:auto}
+  .app-shell .account-name{font-size:12px}
+  .app-shell .account-balance{font-size:16px}
+  .app-shell .account-transfer{font-size:10px}
+  .app-shell .account-currency{font-size:10px}
+}
