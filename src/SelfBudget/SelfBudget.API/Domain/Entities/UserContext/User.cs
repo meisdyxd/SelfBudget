@@ -1,4 +1,5 @@
 ﻿using SelfBudget.API.Domain.Entities.AccountContext;
+using SelfBudget.API.Domain.ValueObjects;
 using SelfBudget.API.Infrastructure.Abstractions;
 
 namespace SelfBudget.API.Domain.Entities.UserContext;
@@ -12,7 +13,7 @@ public class User : AuditableEntity, IBaseEntity<Guid>
 
     public User(
         string name,
-        string email,
+        EmailValueObject email,
         string passwordHash,
         DateTime birthdate,
         Guid? photo = null) : base()
@@ -36,7 +37,7 @@ public class User : AuditableEntity, IBaseEntity<Guid>
     /// <summary>
     /// Электронная почта пользователя
     /// </summary>
-    public string Email { get; set; } = string.Empty;
+    public EmailValueObject Email { get; set; }
 
     /// <summary>
     /// Идентификатор фотографии пользователя

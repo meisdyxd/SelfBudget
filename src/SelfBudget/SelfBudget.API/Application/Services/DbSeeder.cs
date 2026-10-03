@@ -2,6 +2,7 @@
 using SelfBudget.API.Domain.Entities.AccountContext;
 using SelfBudget.API.Domain.Entities.TransactionContext;
 using SelfBudget.API.Domain.Entities.UserContext;
+using SelfBudget.API.Domain.ValueObjects;
 using SelfBudget.API.Infrastructure.Database;
 
 namespace SelfBudget.API.Application.Services;
@@ -52,8 +53,8 @@ public class DbSeeder
             return;
         }
 
-        var user = new User("Admin", "admin@admin.ru", "admin123", new DateTime(1990, 1, 1, 0, 0, 0, DateTimeKind.Utc));
-        var user2 = new User("meisdy", "kararturkar@gmail.com", "meisdy", new DateTime(2005, 2, 1, 20, 35, 0, DateTimeKind.Utc));
+        var user = new User("Admin", EmailValueObject.Create("admin@admin.ru").Value, "admin123", new DateTime(1990, 1, 1, 0, 0, 0, DateTimeKind.Utc));
+        var user2 = new User("meisdy", EmailValueObject.Create("kararturkar@gmail.com").Value, "meisdy", new DateTime(2005, 2, 1, 20, 35, 0, DateTimeKind.Utc));
         await _dbContext.Users.AddRangeAsync(user, user2);
         await _dbContext.SaveChangesAsync();
     }

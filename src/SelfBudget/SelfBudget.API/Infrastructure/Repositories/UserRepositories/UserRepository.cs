@@ -43,7 +43,7 @@ public class UserRepository : IUserRepository
             {
                 Id = u.Id,
                 Birthdate = u.Birthdate,
-                Email = u.Email,
+                Email = u.Email.Value,
                 Name = u.Name,
                 PhotoId = u.PhotoId
             })
@@ -61,7 +61,7 @@ public class UserRepository : IUserRepository
             {
                 Id = u.Id,
                 Birthdate = u.Birthdate,
-                Email = u.Email,
+                Email = u.Email.Value,
                 Name = u.Name,
                 PhotoId = u.PhotoId
             })

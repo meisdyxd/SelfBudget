@@ -49,6 +49,7 @@ public class AccountRepository : IAccountRepository
     public async Task<ICollection<Account>> GetAllAsync(CancellationToken cancellationToken)
     {
         var accounts = await _dbContext.Accounts
+            .Include(a => a.Type)
             .ToListAsync(cancellationToken);
 
         _logger.LogInformation("Получены все счета");
@@ -58,6 +59,7 @@ public class AccountRepository : IAccountRepository
     public async Task<Account?> GetByIdAsync(Guid id, CancellationToken cancellationToken)
     {
         var account = await _dbContext.Accounts
+            .Include(a => a.Type)
             .Where(a => a.Id == id)
             .SingleOrDefaultAsync(cancellationToken);
 

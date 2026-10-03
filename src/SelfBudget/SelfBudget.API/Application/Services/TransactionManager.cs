@@ -67,8 +67,6 @@ public class TransactionManager : ITransactionManager
 
     public async Task<Result<int, Error>> SaveChangesAsync(CancellationToken cancellationToken = default)
     {
-        if (_transaction == null)
-            throw new InvalidOperationException("Транзакция не начата");
         try
         {
             return await _dbContext.SaveChangesAsync(cancellationToken);
