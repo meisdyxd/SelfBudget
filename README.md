@@ -1,82 +1,145 @@
 # SelfBudget
 
-`SelfBudget` - это backend-проект для учета личных финансов. По текущей структуре видно, что идея проекта не ограничивается переводами между счетами: в домене уже есть пользователи, счета, типы счетов, транзакции, категории, подкатегории и теги.
+SelfBudget — веб-приложение для учёта личных финансов. В репозитории находятся клиент на React и API на ASP.NET Core с базой данных PostgreSQL.
 
-Сейчас API в основном покрывает создание пользователя и перевод между счетами, но архитектурно это уже хорошая база для полноценного сервиса личного бюджета.
+Проект находится в активной разработке. API поддерживает регистрацию пользователей, получение счетов и переводы между ними. Вход и история операций в клиенте пока ожидают реализации соответствующих endpoint-ов. Публичного демо пока нет.
 
-## Идея проекта
+## Возможности
 
-Я понимаю проект так:
+- Обзор счетов и просмотр сведений о счёте
+- Переводы между счетами с квитанцией
+- Регистрация пользователя с проверкой данных и пароля
+- Экраны истории операций и фильтры в клиенте; API истории ещё в разработке
+- API на ASP.NET Core с хранением данных в PostgreSQL
+- Загрузка демонстрационных данных в режиме разработки
 
-- у пользователя может быть несколько счетов;
-- у счетов есть тип, валюта, баланс и овердрафт;
-- любое движение денег фиксируется как транзакция;
-- транзакции можно раскладывать по категориям и дополнять заметками;
-- проект постепенно развивается в систему учета доходов, расходов и планирования бюджета.
+## Технологии
 
-## Что уже есть
+- .NET 10 и ASP.NET Core Web API
+- Entity Framework Core и PostgreSQL
+- React 18 и Vite 6
+- Wolverine для обмена сообщениями между компонентами приложения
 
-- ASP.NET Core Web API;
-- PostgreSQL;
-- Entity Framework Core;
-- Wolverine;
-- слои `Api`, `Application`, `Domain`, `Infrastructure`;
-- сущности `User`, `Account`, `AccountType`, `Transaction`, `TransactionCategory`, `Tag`;
-- перевод между счетами с базовой валидацией;
-- сидирование типов счетов, пользователей и категорий;
-- Swagger в dev-режиме;
-- unit-тест на создание счета.
+## Локальный запуск
 
-## Текущие endpoint'ы
+### Требования
 
-- `GET /Users/health`
-- `POST /Users`
-- `POST /api/Transfers`
-- `GET /api/Transfers/{id}`
+- .NET 10 SDK
+- Docker Compose
+- Node.js и npm
+- Утилита командной строки `dotnet-ef` для применения миграций базы данных
 
-## Как запустить
+### Запуск PostgreSQL
 
-Поднять базу:
+Создайте файл `.env` в корневой папке репозитория. Эти значения предназначены только для локальной разработки. Те же параметры нужно указать в строке подключения API ниже.
+
+```dotenv
+SELF_BUDGET_BD_USER=postgres
+SELF_BUDGET_BD_PASSWORD=local_dev_password
+SELF_BUDGET_BD_NAME=self-budget
+```
+
+Запустите базу данных:
 
 ```bash
 docker compose up -d
 ```
 
-Запустить API:
+### Настройка и запуск API
 
-```bash
-dotnet run --project src/SelfBudget/SelfBudget.API
+Укажите строку подключения в терминале, из которого будете запускать миграции и API. Если вы изменили пароль в `.env`, укажите здесь такое же значение.
+
+PowerShell:
+
+```powershell
+$env:ConnectionStrings__Database = "Host=localhost;Port=5432;Database=self-budget;Username=postgres;Password=local_dev_password"
 ```
 
-Запустить тесты:
+macOS или Linux:
 
 ```bash
-dotnet test
+export ConnectionStrings__Database='Host=localhost;Port=5432;Database=self-budget;Username=postgres;Password=local_dev_password'
 ```
 
-## Что можно улучшать дальше
+Примените миграции и запустите API:
 
-- добавить API для счетов, доходов и расходов;
-- вынести более строгую валидацию;
-- добавить авторизацию;
-- хранить пароли безопасно;
-- расширить покрытие тестами;
-- сделать отчеты и историю баланса.
+```bash
+dotnet ef database update --project src/SelfBudget/SelfBudget.API/SelfBudget.API.csproj
+dotnet run --project src/SelfBudget/SelfBudget.API/SelfBudget.API.csproj --launch-profile https
+```
 
-## Frontend
+Если команда `dotnet ef` недоступна, установите версию инструмента для EF Core 10:
 
-Клиентское приложение находится отдельно от backend в `frontend/`:
+```bash
+dotnet tool install --global dotnet-ef --version 10.0.9
+```
+
+API будет доступно по адресу `https://localhost:7023`. Если сертификат локальной разработки не доверенный, выполните `dotnet dev-certs https --trust`.
+
+### Запуск веб-клиента
+
+В другом терминале выполните:
 
 ```bash
 cd frontend
-npm install
+npm ci
 npm run dev
 ```
 
-Локальный API подключается через Vite proxy к `https://localhost:7023`. Если backend слушает другой адрес, задай `SELFBUDGET_API_PROXY_TARGET` в `frontend/.env.local`; пример переменных находится в `frontend/.env.example`.
+Vite запустит клиент по адресу `http://localhost:5173` и будет перенаправлять запросы `/api` на `https://localhost:7023`. Чтобы указать другой адрес API, скопируйте `frontend/.env.example` в `frontend/.env` и измените `SELFBUDGET_API_PROXY_TARGET`.
 
-Открой URL `Local`, который Vite напишет после запуска. Если порт 5173 занят, Vite выберет следующий свободный порт. Доска проекта доступна на том же адресе с путём `/roadmap`. Она читает описания задач из корневой папки `project-tasks/` и сохраняет статусы и заметки в `project-board-state.json`.
+Swagger UI доступен по адресу `https://localhost:7023/swagger`, пока API запущено в режиме Development.
 
-Слои фронтенда, поток авторизации и денежный контракт описаны в [docs/frontend-architecture.md](docs/frontend-architecture.md).
+## API
 
-Чтобы добавить задачу, создай новый `*.task.md` в папке нужной бизнес-фичи. Пример структуры и допустимые поля описаны в [docs/ADDING_TASKS.md](docs/ADDING_TASKS.md). Новые файлы подхватываются открытой доской автоматически.
+| Метод | Адрес | Назначение |
+| --- | --- | --- |
+| `GET` | `/api/users/health` | Проверка доступности API |
+| `GET` | `/api/users/{id}` | Получение сведений о пользователе |
+| `POST` | `/api/auth/register` | Регистрация пользователя; `201 Created`, занятая почта — `409 Conflict` |
+| `GET` | `/api/accounts` | Получение списка счетов |
+| `GET` | `/api/accounts/{id}` | Получение сведений о счёте |
+| `POST` | `/api/transfers` | Создание перевода между счетами |
+| `GET` | `/api/transfers/{id}` | Получение сведений о переводе |
+
+### Регистрация
+
+`POST /api/auth/register` принимает имя, email, дату рождения в формате `YYYY-MM-DD` и пароль:
+
+```json
+{
+  "name": "Анна",
+  "email": "anna@example.com",
+  "birthdate": "1990-05-12",
+  "password": "replace-with-a-long-password"
+}
+```
+
+При успехе API возвращает `201 Created` и публичные данные пользователя:
+
+```json
+{
+  "id": "00000000-0000-0000-0000-000000000000",
+  "name": "Анна",
+  "email": "anna@example.com"
+}
+```
+
+Если адрес уже зарегистрирован, API отвечает `409 Conflict` с кодом `error.register.conflict`.
+
+## Тесты
+
+```bash
+dotnet test tests/SelfBudget.Tests/SelfBudget.Tests.csproj
+```
+
+## Структура репозитория
+
+```text
+frontend/                         Веб-клиент на React
+src/SelfBudget/SelfBudget.API/    API на ASP.NET Core
+tests/SelfBudget.Tests/           Тесты .NET
+docker-compose.yaml               Локальная база PostgreSQL
+```
+
+Вход и API истории операций ещё разрабатываются. Проект предназначен для демонстрации; для локальной работы используйте тестовые данные.
