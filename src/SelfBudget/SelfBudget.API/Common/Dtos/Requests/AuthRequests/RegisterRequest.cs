@@ -1,6 +1,6 @@
-﻿namespace SelfBudget.API.Common.Dtos.Requests.UserRequests;
+﻿namespace SelfBudget.API.Common.Dtos.Requests.AuthRequests;
 
-public class CreateUserRequest
+public class RegisterRequest
 {
     public string Name { get; set; } = string.Empty;
     public string Email { get; set; } = string.Empty;
