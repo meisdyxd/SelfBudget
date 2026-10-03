@@ -1,1 +1,13 @@
 .env
+node_modules/
+dist/
+.npm-cache/
+
+# Local AI-assisted project planning and board state
+/.agents/
+/.codex/
+/project-tasks/
+/project-board-state.json
+/docs/ADDING_TASKS.md
+/docs/frontend-architecture.md
+/docs/product-plan.md
