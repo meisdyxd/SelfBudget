@@ -4,7 +4,7 @@ using SelfBudget.API.Application.UseCases.TransferUseCases.GetTransfer;
 using SelfBudget.API.Application.UseCases.TransferUseCases.TransferBetweenAccounts;
 using SelfBudget.API.Common;
 using SelfBudget.API.Common.Dtos.Requests.TransferRequests;
-using SelfBudget.API.Common.Dtos.Responses;
+using SelfBudget.API.Common.Dtos.Responses.TransferResponses;
 using Wolverine;
 
 namespace SelfBudget.API.Api.Controllers;
