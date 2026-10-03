@@ -21,7 +21,7 @@ public class User : AuditableEntity, IBaseEntity<Guid>
         Name = name;
         Email = email;
         PhotoId = photo;
-        Birthdate = birthdate;
+        Birthdate = birthdate.ToUniversalTime();
     }
 
     /// <inheritdoc/>

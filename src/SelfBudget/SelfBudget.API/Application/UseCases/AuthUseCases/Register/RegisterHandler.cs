@@ -1,8 +1,9 @@
 ﻿using CSharpFunctionalExtensions;
+using FluentValidation;
 using Microsoft.AspNetCore.Identity;
 using SelfBudget.API.Application.Abstractions;
 using SelfBudget.API.Application.Abstractions.Repositories;
-using SelfBudget.API.Application.Services;
+using SelfBudget.API.Application.Extensions;
 using SelfBudget.API.Common;
 using SelfBudget.API.Common.Dtos.Responses.AuthResponses;
 using SelfBudget.API.Domain.Entities.UserContext;
@@ -12,13 +13,16 @@ namespace SelfBudget.API.Application.UseCases.AuthUseCases.Register;
 
 public class RegisterHandler
 {
+    private readonly IValidator<RegisterCommand> _validator;
     private readonly IUserRepository _repository;
     private readonly ITransactionManager _transactionManager;
 
     public RegisterHandler(
+        IValidator<RegisterCommand> validator,
         IUserRepository repository,
         ITransactionManager transactionManager)
     {
+        _validator = validator;
         _repository = repository;
         _transactionManager = transactionManager;
     }
@@ -28,6 +32,11 @@ public class RegisterHandler
         CancellationToken cancellationToken)
     {
         //validation
+        var validationResult = await _validator.ValidateAsync(command, cancellationToken);
+
+        if (!validationResult.IsValid)
+            return validationResult.ToError("register");
+
         var emailResult = EmailValueObject.Create(command.Email);
         if (emailResult.IsFailure)
             return emailResult.Error;
