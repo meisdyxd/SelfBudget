@@ -15,6 +15,11 @@ host.ConfigureWolverine(configuration);
 
 services
     .AddInfrastructure(configuration)
+    .AddCors(options => options.AddPolicy("Frontend", policy =>
+        policy.WithOrigins("http://localhost:5173", "http://127.0.0.1:5173")
+            .AllowAnyOrigin()
+            .AllowAnyHeader()
+            .AllowAnyMethod()))
     .AddOpenApi()
     .AddSwaggerGen()
     .AddControllers();
@@ -32,6 +37,8 @@ if (app.Environment.IsDevelopment())
     var seeder = scope.ServiceProvider.GetRequiredService<DbSeeder>();
     await seeder.SeedAsync();
 }
+
+app.UseCors("Frontend");
 
 app.UseHttpsRedirection();
 
