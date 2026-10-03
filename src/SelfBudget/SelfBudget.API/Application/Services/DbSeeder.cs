@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using SelfBudget.API.Domain.Entities.AccountContext;
 using SelfBudget.API.Domain.Entities.TransactionContext;
 using SelfBudget.API.Domain.Entities.UserContext;
@@ -52,9 +53,15 @@ public class DbSeeder
         {
             return;
         }
+        var passwordHasher = new PasswordHasher<User>();
+        var user = new User("Admin", EmailValueObject.Create("admin@admin.ru").Value, new DateTime(1990, 1, 1, 0, 0, 0, DateTimeKind.Utc));
+        var password = passwordHasher.HashPassword(user, "admin123");
+        user.SetHashPassword(password);
 
-        var user = new User("Admin", EmailValueObject.Create("admin@admin.ru").Value, "admin123", new DateTime(1990, 1, 1, 0, 0, 0, DateTimeKind.Utc));
-        var user2 = new User("meisdy", EmailValueObject.Create("kararturkar@gmail.com").Value, "meisdy", new DateTime(2005, 2, 1, 20, 35, 0, DateTimeKind.Utc));
+        var user2 = new User("meisdy", EmailValueObject.Create("kararturkar@gmail.com").Value, new DateTime(2005, 2, 1, 20, 35, 0, DateTimeKind.Utc));
+        var password2 = passwordHasher.HashPassword(user2, "01022005");
+        user2.SetHashPassword(password2);
+
         await _dbContext.Users.AddRangeAsync(user, user2);
         await _dbContext.SaveChangesAsync();
     }
