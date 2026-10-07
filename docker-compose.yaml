@@ -3,12 +3,18 @@ volumes:
 
 services:
   self-budget-bd:
-    image: postgres:latest
+    image: postgres:18
     container_name: self-budget-bd
     environment:
       POSTGRES_USER: ${SELF_BUDGET_BD_USER}
       POSTGRES_PASSWORD: ${SELF_BUDGET_BD_PASSWORD}
       POSTGRES_DB: ${SELF_BUDGET_BD_NAME}
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${SELF_BUDGET_BD_USER} -d ${SELF_BUDGET_BD_NAME}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
     volumes:
       - postgres_data:/var/lib/postgresql
     ports:
