@@ -33,32 +33,31 @@ SelfBudget — веб-приложение для учёта личных фин
 
 Создайте файл `.env` в корневой папке репозитория. Эти значения предназначены только для локальной разработки. Те же параметры нужно указать в строке подключения API ниже.
 
-```dotenv
-SELF_BUDGET_BD_USER=postgres
-SELF_BUDGET_BD_PASSWORD=local_dev_password
-SELF_BUDGET_BD_NAME=self-budget
+```powershell
+Copy-Item .env.example .env
 ```
 
-Запустите базу данных:
+Файл `.env` используется только Docker Compose и исключён из Git. Для локальной разработки заполнители из примера подходят; не используйте их на опубликованном сервере. Запустите PostgreSQL и дождитесь проверки готовности:
 
 ```bash
-docker compose up -d
+docker compose up -d --wait
+docker compose ps
 ```
 
 ### Настройка и запуск API
 
-Укажите строку подключения в терминале, из которого будете запускать миграции и API. Если вы изменили пароль в `.env`, укажите здесь такое же значение.
+Сохраните строку подключения в .NET User Secrets проекта API. Если вы изменили параметры в `.env`, подставьте те же значения в строку подключения. Это локальная настройка разработчика, она не попадает в репозиторий.
 
 PowerShell:
 
 ```powershell
-$env:ConnectionStrings__Database = "Host=localhost;Port=5432;Database=self-budget;Username=postgres;Password=local_dev_password"
+dotnet user-secrets set "ConnectionStrings:Database" "Host=localhost;Port=5432;Database=db_name;Username=db_user;Password=db_password" --project src/SelfBudget/SelfBudget.API/SelfBudget.API.csproj
 ```
 
 macOS или Linux:
 
 ```bash
-export ConnectionStrings__Database='Host=localhost;Port=5432;Database=self-budget;Username=postgres;Password=local_dev_password'
+dotnet user-secrets set "ConnectionStrings:Database" "Host=localhost;Port=5432;Database=db_name;Username=db_user;Password=db_password" --project src/SelfBudget/SelfBudget.API/SelfBudget.API.csproj
 ```
 
 Для входа нужен секрет подписи JWT. В проекте уже задан `UserSecretsId`, поэтому сохраните свой случайный секрет длиной не менее 32 байт через .NET User Secrets, подставив его вместо значения в угловых скобках:
@@ -69,7 +68,7 @@ dotnet user-secrets set "AuthOptions:SecretKey" "<ваш случайный се
 
 В другой среде тот же параметр можно задать переменной окружения `AuthOptions__SecretKey`. Не добавляйте ключ в `appsettings*.json` или Git. Остальные настройки JWT (`Issuer`, `Audience` и срок жизни access token) находятся в `appsettings.Development.json`.
 
-Примените миграции и запустите API:
+Примените миграции и запустите API в режиме Development:
 
 ```bash
 dotnet ef database update --project src/SelfBudget/SelfBudget.API/SelfBudget.API.csproj
@@ -82,7 +81,9 @@ dotnet run --project src/SelfBudget/SelfBudget.API/SelfBudget.API.csproj --launc
 dotnet tool install --global dotnet-ef --version 10.0.9
 ```
 
-API будет доступно по адресу `https://localhost:7023`. Если сертификат локальной разработки не доверенный, выполните `dotnet dev-certs https --trust`.
+API будет доступно по адресу `https://localhost:7023`. Проверьте его health endpoint по адресу `https://localhost:7023/api/Users/health`. Если сертификат локальной разработки не доверенный, выполните `dotnet dev-certs https --trust`.
+
+Для обычной остановки выполните `docker compose down`. Именованный volume `postgres_data` при этом сохраняется, поэтому созданные данные останутся при следующем `docker compose up -d --wait`. Удаляйте данные только отдельной командой `docker compose down --volumes`, если хотите полностью сбросить локальную базу.
 
 ### Запуск веб-клиента
 
