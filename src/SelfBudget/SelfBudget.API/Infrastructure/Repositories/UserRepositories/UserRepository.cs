@@ -81,4 +81,10 @@ public class UserRepository : IUserRepository
 
         return user is not null;
     }
+
+    public async Task<User?> GetByEmailAsync(EmailValueObject email, CancellationToken cancellationToken)
+    {
+        _logger.LogInformation("Получение пользователя по почте: {Email}", email.Value);
+        return await _dbContext.Users.FirstOrDefaultAsync(u => u.Email == email, cancellationToken);
+    }
 }

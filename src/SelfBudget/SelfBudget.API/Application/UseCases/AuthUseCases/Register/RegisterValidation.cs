@@ -1,4 +1,6 @@
 ﻿using FluentValidation;
+using SelfBudget.API.Common.CustomValidators;
+using SelfBudget.API.Domain.ValueObjects;
 
 namespace SelfBudget.API.Application.UseCases.AuthUseCases.Register;
 
@@ -15,14 +17,7 @@ public class RegisterValidation : AbstractValidator<RegisterCommand>
             .WithMessage("Имя должно состоять только из символов кириллического или латинского алфавита, а также пробела и дефиса");
 
         RuleFor(c => c.Email)
-            .NotEmpty()
-            .WithMessage("Почта не должна быть пустой")
-            .MaximumLength(255)
-            .WithMessage("Максимальная длина почты 255 символов")
-            .MinimumLength(5)
-            .WithMessage("Минимальная длина почты 5 символов")
-            .Matches("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$")
-            .WithMessage("Почта не соответствует формату");
+            .ValidateValueObject(EmailValueObject.Create);
 
         RuleFor(c => c.Password)
             .NotEmpty()

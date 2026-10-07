@@ -1,0 +1,70 @@
+﻿using CSharpFunctionalExtensions;
+using FluentValidation;
+using Microsoft.AspNetCore.Identity;
+using SelfBudget.API.Application.Abstractions;
+using SelfBudget.API.Application.Abstractions.Repositories;
+using SelfBudget.API.Common;
+using SelfBudget.API.Common.Dtos.Responses.AuthResponses;
+using SelfBudget.API.Domain.Entities.UserContext;
+using SelfBudget.API.Domain.ValueObjects;
+
+namespace SelfBudget.API.Application.UseCases.AuthUseCases.Login;
+
+public class LoginHandler
+{
+    private readonly IUserRepository _userRepository;
+    private readonly ITransactionManager _transactionManager;
+    private readonly IValidator<LoginCommand> _validator;
+    private readonly ITokenStorage _tokenStorage;
+    private readonly ITokenProvider _tokenProvider;
+    private readonly ILogger<LoginHandler> _logger;
+
+    public LoginHandler(
+        IUserRepository userRepository,
+        ITransactionManager transactionManager,
+        IValidator<LoginCommand> validator,
+        ITokenStorage tokenStorage,
+        ITokenProvider tokenProvider,
+        ILogger<LoginHandler> logger)
+    {
+        _userRepository = userRepository;
+        _transactionManager = transactionManager;
+        _validator = validator;
+        _tokenStorage = tokenStorage;
+        _tokenProvider = tokenProvider;
+        _logger = logger;
+    }
+
+    public async Task<Result<LoginResponse, Error>> Handle(LoginCommand command, CancellationToken cancellationToken)
+    {
+        var resultValidation = await _validator.ValidateAsync(command, cancellationToken);
+        var email = EmailValueObject.Create(command.Email).Value;
+        var user = await _userRepository.GetByEmailAsync(email, cancellationToken);
+        if (user is null)
+        {
+            return new Error("Пользователя с такой почтой не существует", "error.login.notfound");
+        }
+        var passwordHasher = new PasswordHasher<User>();
+        var resultValidationPassword = passwordHasher.VerifyHashedPassword(user, user.PasswordHash, command.Password);
+        switch (resultValidationPassword)
+        {
+            case PasswordVerificationResult.Failed:
+                return new Error("Неверный пароль", "error.login.fail");
+            case PasswordVerificationResult.SuccessRehashNeeded:
+                var newHashedPassword = passwordHasher.HashPassword(user, command.Password);
+                user.SetHashPassword(newHashedPassword);
+                await _transactionManager.SaveChangesAsync(cancellationToken);
+                break;
+        }
+
+        var accessAndRefresh = _tokenProvider.GenerateAccessAndRefreshToken([]);
+        await _tokenStorage.SetAccessAndRefreshTokenByUserId(user.Id, accessAndRefresh);
+
+        return await Task.FromResult<LoginResponse>(new()
+        {
+            AccessToken = accessAndRefresh.AccessToken,
+            ExpiresAt = accessAndRefresh.AccessExpiresAt,
+            User = new(user.Id, user.Name, user.Email.Value)
+        });
+    }
+}
