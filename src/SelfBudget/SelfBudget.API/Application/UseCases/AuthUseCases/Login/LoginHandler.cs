@@ -3,10 +3,12 @@ using FluentValidation;
 using Microsoft.AspNetCore.Identity;
 using SelfBudget.API.Application.Abstractions;
 using SelfBudget.API.Application.Abstractions.Repositories;
+using SelfBudget.API.Application.Extensions;
 using SelfBudget.API.Common;
 using SelfBudget.API.Common.Dtos.Responses.AuthResponses;
 using SelfBudget.API.Domain.Entities.UserContext;
 using SelfBudget.API.Domain.ValueObjects;
+using System.Security.Claims;
 
 namespace SelfBudget.API.Application.UseCases.AuthUseCases.Login;
 
@@ -38,26 +40,37 @@ public class LoginHandler
     public async Task<Result<LoginResponse, Error>> Handle(LoginCommand command, CancellationToken cancellationToken)
     {
         var resultValidation = await _validator.ValidateAsync(command, cancellationToken);
+        if (!resultValidation.IsValid)
+        {
+            return resultValidation.ToError("login");
+        }
+
         var email = EmailValueObject.Create(command.Email).Value;
         var user = await _userRepository.GetByEmailAsync(email, cancellationToken);
         if (user is null)
         {
-            return new Error("Пользователя с такой почтой не существует", "error.login.notfound");
+            return new Error("Неверный пароль или почта для входа", "error.login.fail");
         }
         var passwordHasher = new PasswordHasher<User>();
         var resultValidationPassword = passwordHasher.VerifyHashedPassword(user, user.PasswordHash, command.Password);
         switch (resultValidationPassword)
         {
             case PasswordVerificationResult.Failed:
-                return new Error("Неверный пароль", "error.login.fail");
+                return new Error("Неверный пароль или почта для входа", "error.login.fail");
             case PasswordVerificationResult.SuccessRehashNeeded:
                 var newHashedPassword = passwordHasher.HashPassword(user, command.Password);
                 user.SetHashPassword(newHashedPassword);
-                await _transactionManager.SaveChangesAsync(cancellationToken);
+                var saveResult = await _transactionManager.SaveChangesAsync(cancellationToken);
+                if (saveResult.IsFailure)
+                {
+                    return new Error("Ошибка входа в аккаунт, попробуйте снова", "error.login.fail");
+                }
                 break;
         }
 
-        var accessAndRefresh = _tokenProvider.GenerateAccessAndRefreshToken([]);
+        Claim[] claims = [new Claim("sub", user.Id.ToString())];
+        var accessAndRefresh = _tokenProvider.GenerateAccessAndRefreshToken(claims);
+
         await _tokenStorage.SetAccessAndRefreshTokenByUserId(user.Id, accessAndRefresh);
 
         return await Task.FromResult<LoginResponse>(new()

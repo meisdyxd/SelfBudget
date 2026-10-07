@@ -22,6 +22,10 @@ public sealed class EmailValueObject : ValueObject
     {
         bool ValidateLength(string value) => value.Length is >= EmailConstants.MIN_LENGTH and <= EmailConstants.MAX_LENGTH;
         bool ValidateRegex(string value) => EmailConstants.Regex.IsMatch(value);
+        bool ValidateNotEmpty(string value) => string.IsNullOrWhiteSpace(value);
+
+        if (ValidateNotEmpty(value))
+            return new Error("Почта не может быть пустой", "error.email.validation");
 
         value = value
             .Trim()

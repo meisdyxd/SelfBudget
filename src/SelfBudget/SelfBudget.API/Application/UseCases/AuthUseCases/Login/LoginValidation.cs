@@ -10,5 +10,9 @@ public class LoginValidation : AbstractValidator<LoginCommand>
     {
         RuleFor(l => l.Email)
             .ValidateValueObject(EmailValueObject.Create);
+
+        RuleFor(l => l.Password)
+            .NotEmpty()
+            .WithMessage("Пароль не может быть пустым");
     }
 }

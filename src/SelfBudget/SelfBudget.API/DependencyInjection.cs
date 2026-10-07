@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using SelfBudget.API.Application.Abstractions;
 using SelfBudget.API.Application.Abstractions.Repositories;
+using SelfBudget.API.Application.Options;
 using SelfBudget.API.Application.Services;
 using SelfBudget.API.Application.UseCases.AuthUseCases.Register;
 using SelfBudget.API.Infrastructure.Database;
@@ -71,6 +72,13 @@ public static class DependencyInjection
 
     public static IServiceCollection ConfigureServices(this IServiceCollection services, IConfiguration configuration)
     {
+        services.AddOptions(configuration);
+
+        var authOptions = configuration
+            .GetSection(AuthOptions.SectionName)
+            .Get<AuthOptions>()
+            ?? throw new Exception($"Параметры для {nameof(AuthOptions)} не определены");
+
         services.AddAuthorization();
         services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             .AddJwtBearer(options =>
@@ -80,11 +88,20 @@ public static class DependencyInjection
                     ValidateAudience = true,
                     ValidateIssuer = true,
                     ValidateIssuerSigningKey = true,
-                    ValidIssuer = "SelfBudget.Auth",
-                    ValidAudience = "SelfBudget.Backend",
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("auth-security-key"))
+                    ValidIssuer = authOptions.Issuer,
+                    ValidAudience = authOptions.Audience,
+                    IssuerSigningKey = authOptions.GetSymmetricSecurityKey()
                 };
             });
+
+        return services;
+    }
+
+    public static IServiceCollection AddOptions(this IServiceCollection services, IConfiguration configuration)
+    {
+        services.AddOptions<AuthOptions>()
+            .Bind(configuration.GetSection(AuthOptions.SectionName))
+            .ValidateDataAnnotations();
 
         return services;
     }

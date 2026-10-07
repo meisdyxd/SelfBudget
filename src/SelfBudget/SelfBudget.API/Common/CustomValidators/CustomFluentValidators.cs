@@ -19,7 +19,7 @@ public static class CustomFluentValidators
                 { 
                     ErrorCode = error.Code, 
                     ErrorMessage = error.Message, 
-                    PropertyName = nameof(TElement) 
+                    PropertyName = context.PropertyPath
                 });
             }
         });
