@@ -1,5 +1,6 @@
 ﻿using CSharpFunctionalExtensions;
 using Microsoft.AspNetCore.Mvc;
+using SelfBudget.API.Application.UseCases.AuthUseCases.Login;
 using SelfBudget.API.Application.UseCases.AuthUseCases.Register;
 using SelfBudget.API.Common;
 using SelfBudget.API.Common.Dtos.Requests.AuthRequests;
@@ -32,5 +33,23 @@ public class AuthController : ControllerBase
         var response = result.Value;
 
         return CreatedAtRoute("GetUserById", new { id = response.Id}, response);
+    }
+
+    [HttpPost("login")]
+    public async Task<IActionResult> Login(
+        [FromBody] LoginRequest request,
+        [FromServices] IMessageBus messageBus,
+        CancellationToken cancellationToken)
+    {
+        var command = LoginCommand.FromRequest(request);
+
+        var result = await messageBus.InvokeAsync<Result<LoginResponse, Error>>(command, cancellationToken);
+        if (result.IsFailure)
+        {
+            return BadRequest(result.Error);
+        }
+        var response = result.Value;
+
+        return Ok(response);
     }
 }

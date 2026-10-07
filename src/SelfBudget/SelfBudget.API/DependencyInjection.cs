@@ -1,14 +1,19 @@
 ﻿using FluentValidation;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using SelfBudget.API.Application.Abstractions;
 using SelfBudget.API.Application.Abstractions.Repositories;
+using SelfBudget.API.Application.Options;
 using SelfBudget.API.Application.Services;
 using SelfBudget.API.Application.UseCases.AuthUseCases.Register;
 using SelfBudget.API.Infrastructure.Database;
+using SelfBudget.API.Infrastructure.InMemoryStorage;
 using SelfBudget.API.Infrastructure.Repositories.AccountRepositories;
 using SelfBudget.API.Infrastructure.Repositories.TransactionRepositories;
 using SelfBudget.API.Infrastructure.Repositories.UserRepositories;
+using System.Text;
 using Wolverine;
 using Wolverine.EntityFrameworkCore;
 using Wolverine.Postgresql;
@@ -33,6 +38,7 @@ public static class DependencyInjection
         services.AddScoped<IAccountTypeRepository, AccountTypeRepository>();
         services.AddScoped<ITransactionManager, TransactionManager>();
         services.AddScoped<DbSeeder>();
+        services.AddSingleton<ITokenStorage, InMemoryTokenStorage>();
 
         return services;
     }
@@ -42,6 +48,7 @@ public static class DependencyInjection
         IConfiguration configuration)
     {
         services.AddValidatorsFromAssemblyContaining<RegisterValidation>();
+        services.AddScoped<ITokenProvider, JwtTokenProvider>();
 
         return services;
     }
@@ -61,5 +68,41 @@ public static class DependencyInjection
         });
 
         return host;
+    }
+
+    public static IServiceCollection ConfigureServices(this IServiceCollection services, IConfiguration configuration)
+    {
+        services.AddOptions(configuration);
+
+        var authOptions = configuration
+            .GetSection(AuthOptions.SectionName)
+            .Get<AuthOptions>()
+            ?? throw new Exception($"Параметры для {nameof(AuthOptions)} не определены");
+
+        services.AddAuthorization();
+        services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+            .AddJwtBearer(options =>
+            {
+                options.TokenValidationParameters = new TokenValidationParameters()
+                {
+                    ValidateAudience = true,
+                    ValidateIssuer = true,
+                    ValidateIssuerSigningKey = true,
+                    ValidIssuer = authOptions.Issuer,
+                    ValidAudience = authOptions.Audience,
+                    IssuerSigningKey = authOptions.GetSymmetricSecurityKey()
+                };
+            });
+
+        return services;
+    }
+
+    public static IServiceCollection AddOptions(this IServiceCollection services, IConfiguration configuration)
+    {
+        services.AddOptions<AuthOptions>()
+            .Bind(configuration.GetSection(AuthOptions.SectionName))
+            .ValidateDataAnnotations();
+
+        return services;
     }
 }

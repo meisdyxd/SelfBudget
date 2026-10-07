@@ -1,5 +1,6 @@
 ﻿using CSharpFunctionalExtensions;
 using SelfBudget.API.Common;
+using SelfBudget.API.Common.Constants;
 
 namespace SelfBudget.API.Domain.ValueObjects;
 
@@ -19,14 +20,22 @@ public sealed class EmailValueObject : ValueObject
 
     public static Result<EmailValueObject, Error> Create(string value)
     {
-        value = value.Trim();
-        if (value.Length < 5 
-            || value.Length > 255 
-            || !value.Contains('@') 
-            || value.Split('@').Length != 2 
-            || value.Split('@')[1].Length < 3)
-            return new Error("Ошибка валидации почты", "error.email.validation");
+        bool ValidateLength(string value) => value.Length is >= EmailConstants.MIN_LENGTH and <= EmailConstants.MAX_LENGTH;
+        bool ValidateRegex(string value) => EmailConstants.Regex.IsMatch(value);
+        bool ValidateNotEmpty(string value) => string.IsNullOrWhiteSpace(value);
 
-        return new EmailValueObject(value.ToLower(culture: System.Globalization.CultureInfo.InvariantCulture));
+        if (ValidateNotEmpty(value))
+            return new Error("Почта не может быть пустой", "error.email.validation");
+
+        value = value
+            .Trim()
+            .ToLower(culture: System.Globalization.CultureInfo.InvariantCulture);
+
+        if (!ValidateLength(value))
+            return new Error("Длина почты должна соответствовать от 5 до 255 символов включительно", "error.email.validation");
+        if (!ValidateRegex(value))
+            return new Error("Почта не соответствуте формату name@domain.name", "error.email.validation");
+
+        return new EmailValueObject(value);
     }
 }
