@@ -92,11 +92,11 @@ public class Account : AuditableEntity, IBaseEntity<Guid>
     {
         if (amount <= 1)
         {
-            return new Error("Сумма перевода должна быть больше единицы.");
+            return new Error("Сумма перевода должна быть больше единицы.", "error.account.amount");
         }
         if (Balance - amount < -OverdraftLimit)
         {
-            return new Error("Недостаточно средств для перевода.");
+            return new Error("Недостаточно средств для перевода.", "error.account.overdraft");
         }
         Balance -= amount;
         targetAccount.Balance += amount;
