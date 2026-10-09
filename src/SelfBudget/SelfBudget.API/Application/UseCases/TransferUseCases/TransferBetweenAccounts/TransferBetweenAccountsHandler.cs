@@ -48,15 +48,31 @@ public class TransferBetweenAccountsHandler
                 command.Amount);
 
             if (validationResultAccounts.IsFailure)
+            {
+                await _transactionManager.RollbackAsync(cancellationToken);
                 return validationResultAccounts.Error;
+            }
 
-            var transferCategoryId = await _transactionCategoryRepository.GetTransferIdAsync(cancellationToken);
+            Guid? transferCategoryId = null;
+            if (sourceAccount!.UserId != destinationAccount!.UserId)
+                transferCategoryId = await _transactionCategoryRepository.GetTransferIdAsync(cancellationToken);
+            else
+                transferCategoryId = await _transactionCategoryRepository.GetTransactionCategoryByCode(
+                    TransactionCategoriesCodes.SelfTransfer, 
+                    cancellationToken);
+
             if (transferCategoryId == null)
+            {
+                await _transactionManager.RollbackAsync(cancellationToken);
                 return new Error("Категория перевода не найдена");
+            }
 
             var resultTransfer = sourceAccount!.TransferTo(destinationAccount!, command.Amount);
             if (resultTransfer.IsFailure)
+            {
+                await _transactionManager.RollbackAsync(cancellationToken);
                 return resultTransfer.Error;
+            }
 
             var transaction = new Transaction(
                 command.Amount,
@@ -72,6 +88,7 @@ public class TransferBetweenAccountsHandler
             var saveResult = await _transactionManager.SaveChangesAsync(cancellationToken);
             if (saveResult.IsFailure)
             {
+                await _transactionManager.RollbackAsync(cancellationToken);
                 return saveResult.Error;
             }
 

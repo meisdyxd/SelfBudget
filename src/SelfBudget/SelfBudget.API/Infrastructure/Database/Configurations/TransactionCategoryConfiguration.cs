@@ -25,6 +25,11 @@ public class TransactionCategoryConfiguration : IEntityTypeConfiguration<Transac
             .HasMaxLength(255)
             .IsRequired();
 
+        builder.Property(c => c.Code)
+            .HasColumnName("code")
+            .HasMaxLength(255)
+            .IsRequired();
+
         // Связи
         builder.HasOne(c => c.BaseTransactionCategory)
             .WithMany(c => c.Childrens)

@@ -9,10 +9,24 @@ public class TransactionCategory : IBaseEntity<Guid>
     public TransactionCategory(
         Guid transactionCategoryTypeId,
         string name,
+        string code,
         Guid? baseCategoryId = null)
     {
         TransactionCategoryTypeId = transactionCategoryTypeId;
         Name = name;
+        Code = code;
+        BaseTransactionCategoryId = baseCategoryId;
+    }
+
+    public TransactionCategory(
+        Guid transactionCategoryTypeId,
+        string name,
+        TransactionCategoriesCodes code,
+        Guid? baseCategoryId = null)
+    {
+        TransactionCategoryTypeId = transactionCategoryTypeId;
+        Name = name;
+        Code = code.ToString();
         BaseTransactionCategoryId = baseCategoryId;
     }
 
@@ -33,6 +47,11 @@ public class TransactionCategory : IBaseEntity<Guid>
     /// Наименование типа
     /// </summary>
     public string Name { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Код категории
+    /// </summary>
+    public string Code { get; set; } = string.Empty;
 
     /// <summary>
     /// Тип
