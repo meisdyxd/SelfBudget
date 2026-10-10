@@ -1,6 +1,8 @@
 ﻿using CSharpFunctionalExtensions;
+using FluentValidation;
 using SelfBudget.API.Application.Abstractions;
 using SelfBudget.API.Application.Abstractions.Repositories;
+using SelfBudget.API.Application.Extensions;
 using SelfBudget.API.Common;
 using SelfBudget.API.Common.Dtos.AccountDtos;
 using SelfBudget.API.Common.Dtos.Responses.TransferResponses;
@@ -16,26 +18,29 @@ public class TransferBetweenAccountsHandler
     private readonly ITransactionCategoryRepository _transactionCategoryRepository;
     private readonly ITransactionRepository _transactionRepository;
     private readonly ITransactionManager _transactionManager;
+    private readonly IValidator<TransferBetweenAccountsCommand> _validator;
 
     public TransferBetweenAccountsHandler(
         IAccountRepository accountrepository,
         ITransactionCategoryRepository transactionCategoryRepository,
         ITransactionRepository transactionRepository,
-        ITransactionManager transactionManager)
+        ITransactionManager transactionManager,
+        IValidator<TransferBetweenAccountsCommand> validator)
     {
         _accountRepository = accountrepository;
         _transactionCategoryRepository = transactionCategoryRepository;
         _transactionRepository = transactionRepository;
         _transactionManager = transactionManager;
+        _validator = validator;
     }
 
     public async Task<Result<TransferResponse, Error>> Handle(
         TransferBetweenAccountsCommand command,
         CancellationToken cancellationToken)
     {
-        var validationResult = ValidateCommand(command);
-        if (validationResult.IsFailure)
-            return validationResult.Error;
+        var validationResult = await _validator.ValidateAsync(command, cancellationToken);
+        if (!validationResult.IsValid)
+            return validationResult.ToError("transfer");
 
         await _transactionManager.BeginTransactionAsync(IsolationLevel.ReadCommitted, cancellationToken);
         try
@@ -109,17 +114,6 @@ public class TransferBetweenAccountsHandler
             await _transactionManager.RollbackAsync(cancellationToken);
             return new Error("Ошибка при выполнении перевода: " + ex.Message);
         }
-    }
-
-    private static Result<bool, Error> ValidateCommand(TransferBetweenAccountsCommand command)
-    {
-        if (command.Amount <= 1)
-            return new Error("Сумма должна быть больше 1");
-
-        if ((command.Amount * 100) % 1 != 0)
-            return new Error("Сумма должна иметь не более 2 знаков после запятой");
-
-        return true;
     }
 
     private static Result<bool, Error> ValidateAccounts(
