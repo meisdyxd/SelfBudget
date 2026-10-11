@@ -11,5 +11,9 @@ public class TransferBetweenAccountsValidation : AbstractValidator<TransferBetwe
             .WithMessage("Сумма должна быть больше 1")
             .PrecisionScale(18, 2, true)
             .WithMessage("Сумма должна иметь не более 2 знаков после запятой");
+
+        RuleFor(c => c.FromAccountId)
+            .NotEqual(c => c.ToAccountId)
+            .WithMessage("Перевод между одинаковыми счетами запрещен");
     }
 }
