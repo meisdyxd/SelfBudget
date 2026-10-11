@@ -32,35 +32,75 @@ function initialTaskState() {
   return { version: 1, tasks: {} }
 }
 
-function inlineText(text, prefix) {
+function resolveTaskFile(currentFile, target, tasks) {
+  if (!currentFile || !target || /^[a-z][a-z\d+.-]*:/i.test(target) || target.startsWith('//')) return null
+
+  try {
+    const baseUrl = new URL(currentFile, 'https://project-board.local/')
+    const targetUrl = new URL(target, baseUrl)
+    if (targetUrl.origin !== baseUrl.origin) return null
+
+    const filePath = decodeURIComponent(targetUrl.pathname.slice(1))
+    if (!filePath.startsWith('project-tasks/')) return null
+    return tasks.find((task) => task.file === filePath) || null
+  } catch {
+    return null
+  }
+}
+
+function inlineText(text, prefix, { currentFile, tasks, onTaskLink }) {
   const parts = []
-  const pattern = /`([^`]+)`|\*\*([^*]+)\*\*/g
+  const pattern = /\\?\[([^\]]+)\]\\?\(([^)\s]+)\)|`([^`]+)`|\*\*([^*]+)\*\*/g
   let previous = 0
   let match
   while ((match = pattern.exec(text)) !== null) {
     if (match.index > previous) parts.push(text.slice(previous, match.index))
-    parts.push(match[1]
-      ? <code key={`${prefix}-${match.index}`}>{match[1]}</code>
-      : <strong key={`${prefix}-${match.index}`}>{match[2]}</strong>)
+    if (match[1]) {
+      const label = match[1]
+      const target = match[2].replaceAll('\\(', '(').replaceAll('\\)', ')')
+      const task = resolveTaskFile(currentFile, target, tasks)
+      if (task) {
+        parts.push(<button type="button" className="board-task-link" key={`${prefix}-${match.index}`} onClick={() => onTaskLink(task)}>{label}</button>)
+      } else if (/^https?:\/\//i.test(target)) {
+        parts.push(<a href={target} key={`${prefix}-${match.index}`} target="_blank" rel="noopener noreferrer">{label}</a>)
+      } else {
+        parts.push(label)
+      }
+    } else if (match[3]) {
+      parts.push(<code key={`${prefix}-${match.index}`}>{match[3]}</code>)
+    } else {
+      parts.push(<strong key={`${prefix}-${match.index}`}>{match[4]}</strong>)
+    }
     previous = pattern.lastIndex
   }
   if (previous < text.length) parts.push(text.slice(previous))
   return parts.length ? parts : text
 }
 
-function TaskDescription({ value }) {
+function TaskDescription({ value, currentFile, tasks, onTaskLink }) {
+  const inlineOptions = { currentFile, tasks, onTaskLink }
   const blocks = (value || '').split(/\n\s*\n/).map((block) => block.trim()).filter(Boolean)
   return <div className="board-markdown">{blocks.map((block, index) => {
     const lines = block.split('\n')
     if (lines.every((line) => /^\s*[-*]\s+/.test(line))) {
-      return <ul key={index}>{lines.map((line, lineIndex) => <li key={lineIndex}>{inlineText(line.replace(/^\s*[-*]\s+/, ''), `${index}-${lineIndex}`)}</li>)}</ul>
+      return <ul key={index}>{lines.map((line, lineIndex) => <li key={lineIndex}>{inlineText(line.replace(/^\s*[-*]\s+/, ''), `${index}-${lineIndex}`, inlineOptions)}</li>)}</ul>
+    }
+    if (lines.every((line) => /^\s*\d+\\?[.)]\s+/.test(line))) {
+      return <div className="board-ordered-list" key={index}>{lines.map((line, lineIndex) => {
+        const number = line.match(/^\s*(\d+)\\?[.)]\s+/)?.[1] || lineIndex + 1
+        const content = line.replace(/^\s*\d+\\?[.)]\s+/, '')
+        return <div className="board-ordered-list-item" key={lineIndex}>
+          <span className="board-ordered-list-number">{number}.</span>
+          <span className="board-ordered-list-content">{inlineText(content, `${index}-${lineIndex}`, inlineOptions)}</span>
+        </div>
+      })}</div>
     }
     if (/^#{1,3}\s/.test(lines[0])) {
       const title = lines[0].replace(/^#{1,3}\s+/, '')
       const remainder = lines.slice(1).join(' ').trim()
-      return <div className="board-description-block" key={index}><h4>{inlineText(title, `${index}-title`)}</h4>{remainder && <p>{inlineText(remainder, `${index}-body`)}</p>}</div>
+      return <div className="board-description-block" key={index}><h4>{inlineText(title, `${index}-title`, inlineOptions)}</h4>{remainder && <p>{inlineText(remainder, `${index}-body`, inlineOptions)}</p>}</div>
     }
-    return <p key={index}>{inlineText(lines.join(' '), `${index}-paragraph`)}</p>
+    return <p key={index}>{inlineText(lines.join(' '), `${index}-paragraph`, inlineOptions)}</p>
   })}</div>
 }
 
@@ -139,6 +179,13 @@ export default function ProjectBoard() {
     setSelectedTaskId(task.id)
     setDraftStatus(taskState.tasks[task.id]?.status || 'todo')
     setDraftNote(taskState.tasks[task.id]?.note || '')
+  }
+
+  function openLinkedTask(task) {
+    const section = sections.find((item) => item.tasks?.some((candidate) => candidate.id === task.id))
+    if (!section) return
+    setSelectedSectionId(section.id)
+    openTask(task)
   }
 
   async function saveTask(status = draftStatus) {
@@ -222,7 +269,7 @@ export default function ProjectBoard() {
 
           {selectedSection ? <>
             <section className="board-feature-heading">
-              <div><div className="board-section-kicker">РАЗДЕЛ {String(selectedSection.order || '').padStart(2, '0')} <span>·</span> {selectedSection.priority === 'mvp' ? 'MVP' : 'СЛЕДУЮЩИЙ ЭТАП'}</div><h2>{selectedSection.title}</h2><p>{selectedSection.summary}</p></div>
+              <div className="board-section-copy"><div className="board-section-kicker">РАЗДЕЛ {String(selectedSection.order || '').padStart(2, '0')} <span>·</span> {selectedSection.priority === 'mvp' ? 'MVP' : 'СЛЕДУЮЩИЙ ЭТАП'}</div><h2>{selectedSection.title}</h2><div className="board-section-summary"><TaskDescription value={selectedSection.summary} currentFile={selectedSection.file} tasks={allTasks} onTaskLink={openLinkedTask} /></div></div>
               <div className="board-feature-progress"><span>{sectionDone(selectedSection)} из {selectedSection.tasks?.length || 0} готово</span><div><i style={{ width: `${selectedSection.tasks?.length ? (sectionDone(selectedSection) / selectedSection.tasks.length) * 100 : 0}%` }} /></div></div>
             </section>
 
@@ -245,7 +292,7 @@ export default function ProjectBoard() {
                 <div className="board-detail-top"><div className="board-detail-label">ТЕХНИЧЕСКАЯ ЗАДАЧА</div><button type="button" className="board-close-detail" onClick={() => setSelectedTaskId('')} aria-label="Закрыть задачу">×</button></div>
                 <h3>{selectedTask.title}</h3>
                 <div className="board-detail-meta"><span>{AREA[selectedTask.area]?.label || selectedTask.area}</span><span>{selectedTask.owner === 'assistant' ? 'Ассистент' : 'Твоя задача'}</span><span>Размер {selectedTask.size || 'M'}</span></div>
-                <div className="board-description"><TaskDescription value={selectedTask.description} /></div>
+                <div className="board-description"><TaskDescription value={selectedTask.description} currentFile={selectedTask.file} tasks={allTasks} onTaskLink={openLinkedTask} /></div>
                 <div className="board-task-source"><FileText size={14} /> {selectedTask.file}</div>
                 <label className="board-status-field">Статус
                   <select value={draftStatus} onChange={(event) => setDraftStatus(event.target.value)}>

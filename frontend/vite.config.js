@@ -70,7 +70,11 @@ async function discoverProjectTasks() {
       }
     }
 
-    sections.push({ ...section, tasks: tasks.sort((a, b) => (a.order || 0) - (b.order || 0)) })
+    sections.push({
+      ...section,
+      file: path.posix.join('project-tasks', entry.name, '_section.md'),
+      tasks: tasks.sort((a, b) => (a.order || 0) - (b.order || 0)),
+    })
   }
 
   sections.sort((a, b) => (a.order || 0) - (b.order || 0))
