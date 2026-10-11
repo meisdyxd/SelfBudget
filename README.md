@@ -24,10 +24,23 @@ SelfBudget — веб-приложение для учёта личных фин
 
 ### Требования
 
-- .NET 10 SDK
+- .NET 10 SDK, совместимый с корневым `global.json` (базовая версия — `10.0.401`)
 - Docker Compose
 - Node.js и npm
 - Утилита командной строки `dotnet-ef` для применения миграций базы данных
+
+### Версия .NET SDK
+
+Версия SDK для разработки и CI задаётся в корневом `global.json`: `10.0.401`, `rollForward: latestPatch`, `allowPrerelease: false`. Установите указанный SDK либо более новый стабильный patch той же серии `10.0.4xx`; переход на другую серию или major этой политикой не разрешается. Правила выбора описаны в [документации global.json](https://learn.microsoft.com/en-us/dotnet/core/tools/global-json#rollforward).
+
+Проверьте из корня репозитория:
+
+```bash
+dotnet --list-sdks
+dotnet --version
+```
+
+Первая команда перечисляет установленные SDK, вторая показывает выбранный для проекта. GitHub Actions устанавливает SDK через `setup-dotnet` с `global-json-file: global.json`, затем выводит `dotnet --version` в шаге `Show SDK version`.
 
 ### Запуск PostgreSQL
 
@@ -98,6 +111,18 @@ npm run dev
 Vite запустит клиент по адресу `http://localhost:5173` и будет перенаправлять запросы `/api` на `https://localhost:7023`. Чтобы указать другой адрес API, скопируйте `frontend/.env.example` в `frontend/.env` и измените `SELFBUDGET_API_PROXY_TARGET`.
 
 Swagger UI доступен по адресу `https://localhost:7023/swagger`, пока API запущено в режиме Development.
+
+### Где хранится конфигурация
+
+| Среда | Источник | Параметры |
+| --- | --- | --- |
+| Локальный PostgreSQL | Игнорируемый корневой `.env` для Docker Compose | Имя БД, пользователь и пароль контейнера |
+| Локальный API | .NET User Secrets проекта API | `ConnectionStrings:Database`, `AuthOptions:SecretKey` |
+| GitHub Actions | `env` соответствующего job в `.github/workflows/ci.yml` | Отдельная тестовая строка `ConnectionStrings__Database` для временного PostgreSQL service |
+
+User Secrets и локальный `.env` разработчика в GitHub Actions не передаются. Текущий CI запускает unit-тесты и использует отдельные демонстрационные параметры временной БД; JWT signing key в этом workflow не задан. Когда появятся HTTP integration tests, их host получит отдельную тестовую конфигурацию и тестовый ключ, без копирования локальных секретов разработчика.
+
+В `.env.example` оставляются только демонстрационные значения. Реальные пароли и JWT-ключи не записываются в примеры или `appsettings*.json`. При проверке настройки не публикуйте содержимое User Secrets: достаточно результата запуска API и login.
 
 ## API
 
