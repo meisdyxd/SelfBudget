@@ -118,9 +118,9 @@ Swagger UI доступен по адресу `https://localhost:7023/swagger`, 
 | --- | --- | --- |
 | Локальный PostgreSQL | Игнорируемый корневой `.env` для Docker Compose | Имя БД, пользователь и пароль контейнера |
 | Локальный API | .NET User Secrets проекта API | `ConnectionStrings:Database`, `AuthOptions:SecretKey` |
-| GitHub Actions | `env` соответствующего job в `.github/workflows/ci.yml` | Отдельная тестовая строка `ConnectionStrings__Database` для временного PostgreSQL service |
+| GitHub Actions | Настройки `.github/workflows/ci.yml` | Текущие unit-тесты и frontend build не требуют подключения к БД или JWT-ключа |
 
-User Secrets и локальный `.env` разработчика в GitHub Actions не передаются. Текущий CI запускает unit-тесты и использует отдельные демонстрационные параметры временной БД; JWT signing key в этом workflow не задан. Когда появятся HTTP integration tests, их host получит отдельную тестовую конфигурацию и тестовый ключ, без копирования локальных секретов разработчика.
+User Secrets и локальный `.env` разработчика в GitHub Actions не передаются. Текущий CI запускает unit-тесты с моками без PostgreSQL service и JWT signing key. Когда появятся HTTP integration tests, отдельный job `integration` получит временный PostgreSQL service, явную тестовую конфигурацию и тестовый ключ, без копирования локальных секретов разработчика.
 
 В `.env.example` оставляются только демонстрационные значения. Реальные пароли и JWT-ключи не записываются в примеры или `appsettings*.json`. При проверке настройки не публикуйте содержимое User Secrets: достаточно результата запуска API и login.
 
@@ -190,6 +190,19 @@ User Secrets и локальный `.env` разработчика в GitHub Act
 Для неизвестного email и неверного пароля API возвращает одинаковую ошибку. Access token действует 15 минут при настройках разработки. Проверка токена и ограничение доступа к личным данным находятся в разработке.
 
 ## Тесты
+
+### GitHub Actions
+
+Workflow `.github/workflows/ci.yml` запускается при push в `main`, при pull request в `main` и вручную через Actions → CI → Run workflow.
+
+- `backend`: checkout → SDK из `global.json` → вывод версии → restore → Release build API и тестового проекта → unit-тесты.
+- `frontend`: checkout → Node.js 22 → `npm ci` → production build.
+
+Jobs независимы и могут выполняться параллельно на отдельных runners. Шаги внутри одного job выполняются по порядку; ошибка restore/build/test завершает job с неуспешным результатом. PostgreSQL не запускается: существующие backend-тесты используют моки репозиториев и транзакций. Версия Node через `.nvmrc` и npm cache будут подключены отдельной задачей.
+
+После отправки изменений откройте Actions → CI → нужный run. В списке jobs должны быть `backend` и `frontend`; оба результата должны быть зелёными. В `backend` раскройте `Show SDK version` и `Run .NET tests`, чтобы увидеть выбранный SDK и результат тестов. Этот run подтверждает CI; обязательность проверок перед merge настраивается отдельно.
+
+### Локальный запуск unit-тестов
 
 ```bash
 dotnet test tests/SelfBudget.Tests/SelfBudget.Tests.csproj
