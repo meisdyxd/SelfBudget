@@ -324,7 +324,7 @@ public class TransferBetweenAccountsTests
         accountRepository.Setup(action => action.GetByIdAsync(sourceAccountId, It.IsAny<CancellationToken>()))
             .Returns(Task.FromResult<Account?>(null));
         accountRepository.Setup(action => action.GetByIdAsync(destinationAccountId, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(It.IsAny<Account>());
+            .ReturnsAsync(new Account(Guid.NewGuid(), "destination", "RUB", Guid.NewGuid()));
 
         var transactionCategoryRepository = new Mock<ITransactionCategoryRepository>(MockBehavior.Strict);
 
@@ -375,7 +375,7 @@ public class TransferBetweenAccountsTests
         var destinationAccountId = Guid.NewGuid();
         var accountRepository = new Mock<IAccountRepository>(MockBehavior.Strict);
         accountRepository.Setup(action => action.GetByIdAsync(sourceAccountId, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(It.IsAny<Account>());
+            .ReturnsAsync(new Account(Guid.NewGuid(), "source", "RUB", Guid.NewGuid()));
         accountRepository.Setup(action => action.GetByIdAsync(destinationAccountId, It.IsAny<CancellationToken>()))
             .Returns(Task.FromResult<Account?>(null));
 
@@ -637,5 +637,66 @@ public class TransferBetweenAccountsTests
         Assert.Equal(destinationBalance, expectedAccountDestination.Balance);
         transactionManager.Verify(action => action.BeginTransactionAsync(IsolationLevel.ReadCommitted, It.IsAny<CancellationToken>()), Times.Once);
         transactionManager.Verify(action => action.RollbackAsync(It.IsAny<CancellationToken>()), Times.Once);
+    }
+
+    [Fact]
+    public async Task TransferBetweenEqualAccounts_ThrowError()
+    {
+        // arrange
+        var accountTypeId = Guid.NewGuid();
+        var userIdSource = Guid.NewGuid();
+        var userIdDestination = Guid.NewGuid();
+        var sourceBalance = 100m;
+        var transferAmount = 50m;
+        var account = new Account(userIdSource, "account", "RUB", accountTypeId)
+        {
+            Balance = sourceBalance
+        };
+
+        var accountRepository = new Mock<IAccountRepository>();
+        accountRepository.Setup(action => action.GetByIdAsync(account.Id, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(account);
+
+        var expectedTransactionCategoryId = Guid.NewGuid();
+        var transactionCategoryRepository = new Mock<ITransactionCategoryRepository>(MockBehavior.Strict);
+        transactionCategoryRepository.Setup(action => action.GetTransferIdAsync(It.IsAny<CancellationToken>()))
+            .ReturnsAsync(expectedTransactionCategoryId);
+
+        var transactionRepository = new Mock<ITransactionRepository>();
+        Transaction? capturedTransaction = null;
+
+        transactionRepository.Setup(action => action.CreateTransactionAsync(It.IsAny<Transaction>(), It.IsAny<CancellationToken>()))
+            .Callback<Transaction, CancellationToken>((transaction, _) => capturedTransaction = transaction)
+            .ReturnsAsync((Transaction transaction, CancellationToken _) => transaction.Id);
+
+        var transactionManager = new Mock<ITransactionManager>(MockBehavior.Strict);
+
+        var command = new TransferBetweenAccountsCommand()
+        {
+            Amount = transferAmount,
+            FromAccountId = account.Id,
+            ToAccountId = account.Id,
+            TransactionCategoryId = expectedTransactionCategoryId,
+            Note = null
+        };
+
+        var validator = new TransferBetweenAccountsValidation();
+
+        var sut = new TransferBetweenAccountsHandler(
+            accountRepository.Object,
+            transactionCategoryRepository.Object,
+            transactionRepository.Object,
+            transactionManager.Object,
+            validator);
+
+        // act
+
+        var result = await sut.Handle(command, CancellationToken.None);
+
+        // assert
+
+        Assert.True(result.IsFailure);
+        Assert.Equal("Перевод между одинаковыми счетами запрещен", result.Error.Message);
+        Assert.Equal(sourceBalance, account.Balance);
     }
 }
